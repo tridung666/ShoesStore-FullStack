@@ -4,7 +4,7 @@ import logo from '../assets/images/j97.png'; // Logo của trang web
 
 const Footer = () => {
   return (
-    <div className=" bg-gray-100 text-gray-700 py-6 h-[250px]">
+    <div className=" bg-white text-gray-700 py-6 h-[250px] mt-auto">
 
 <div className="flex justify-between items-center px-6">
         {/* Logo */}
