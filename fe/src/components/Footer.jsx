@@ -4,7 +4,7 @@ import logo from '../assets/images/j97.png'; // Logo của trang web
 
 const Footer = () => {
   return (
-    <div className=" bg-white text-gray-700 py-6 h-[250px] mt-auto">
+    <div className=" bg-[#FED3D3] text-gray-700 py-6 h-[250px] mt-auto">
 
 <div className="flex justify-between items-center px-6">
         {/* Logo */}
@@ -14,7 +14,7 @@ const Footer = () => {
 
         {/* Social Media Icons */}
         <div className="flex space-x-6 text-xl">
-          <a href="https://facebook.com" className="text-black text-[30px] hover:text-blue-600"><FaFacebook /></a>
+          <a href="https://www.facebook.com/tran.tan.26047" className="text-black text-[30px] hover:text-blue-600"><FaFacebook /></a>
           <a href="https://instagram.com" className="text-black text-[30px] hover:text-pink-600"><FaInstagram /></a>
           <a href="https://twitter.com" className="text-black text-[30px] hover:text-blue-400"><FaTwitter /></a>
           <a href="https://linkedin.com" className="text-black text-[30px] hover:text-blue-700"><FaLinkedin /></a>
