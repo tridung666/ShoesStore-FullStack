@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaYoutube } from 'react-icons/fa'; // Các biểu tượng mạng xã hội
-import logo from '../assets/images/j97.png'; // Logo của trang web
+import logo from '../assets/images/J97.png'; // Logo của trang web
 
 const Footer = () => {
   return (
