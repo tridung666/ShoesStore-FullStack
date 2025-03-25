@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(""); // Đổi từ email thành username
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }), // Gửi username thay vì email
       });
   
       const data = await response.json();
@@ -46,15 +46,15 @@ const Login = () => {
       </p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
-        {/* Email */}
+        {/* Username */}
         <div className="mb-8">
-          <label className="block text-2xl text-gray-700 mb-3">Email*</label>
+          <label className="block text-2xl text-gray-700 mb-3">Username*</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username} // Đổi từ email thành username
+            onChange={(e) => setUsername(e.target.value)} // Đổi từ setEmail thành setUsername
             className="w-full px-6 py-4 border border-gray-300 rounded-lg text-xl focus:outline-none focus:ring-4 focus:ring-gray-500 text-black"
-            placeholder="Enter your email"
+            placeholder="Enter your username"
             required
           />
         </div>

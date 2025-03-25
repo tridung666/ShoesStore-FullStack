@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Register = () => {
   // State để lưu giá trị các trường nhập liệu
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState(""); // Đổi từ email thành username
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Register = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, username, password }), // Gửi username thay vì email
       });
 
       const data = await response.json();
@@ -58,16 +58,16 @@ const Register = () => {
           />
         </div>
 
-        {/* Email */}
+        {/* Username */}
         <div className="mb-8">
-          <label htmlFor="email" className="block text-2xl text-gray-700 mb-3">Email*</label>
+          <label htmlFor="username" className="block text-2xl text-gray-700 mb-3">Username*</label>
           <input
-            type="email"
-            id="email"
+            type="text"
+            id="username"
             className="w-full px-6 py-4 border border-gray-300 rounded-lg text-xl focus:outline-none focus:ring-4 focus:ring-gray-500 text-black"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your username"
+            value={username} // Đổi từ email thành username
+            onChange={(e) => setUsername(e.target.value)} // Đổi từ setEmail thành setUsername
             required
           />
         </div>
