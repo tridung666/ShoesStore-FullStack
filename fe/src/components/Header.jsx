@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/images/j97.png";
+import logo from "../assets/images/J97.png";
 import { Link } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
