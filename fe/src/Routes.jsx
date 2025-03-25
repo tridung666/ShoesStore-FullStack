@@ -1,13 +1,16 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/HomePage/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 const RouteConfig = () => {
   return (
     <Routes>
       {/* Route chính */}
       <Route path="/" element={<Home />} />
-
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       {/* Route cho trang About
       <Route path="/about" element={<About />} />
 
