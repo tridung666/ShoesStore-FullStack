@@ -1,38 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../services/authService";
 
 const Register = () => {
-  // State để lưu giá trị các trường nhập liệu
   const [name, setName] = useState("");
-  const [username, setUsername] = useState(""); // Đổi từ email thành username
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Hàm xử lý đăng ký
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", { // Đảm bảo đường dẫn chính xác
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, username, password }), // Gửi username thay vì email
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Điều hướng sang trang Login sau khi đăng ký thành công
-        navigate("/login");
-      } else {
-        // Hiển thị thông báo lỗi nếu đăng ký không thành công
-        setErrorMessage(data.message || "Something went wrong");
-      }
+      await registerUser(name, username, password);
+      navigate("/login");
     } catch (error) {
-      setErrorMessage("Network error. Please try again.");
+      setErrorMessage(error.message);
     }
   };
 
@@ -44,7 +27,6 @@ const Register = () => {
       </p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
-        {/* Tên */}
         <div className="mb-8">
           <label htmlFor="name" className="block text-2xl text-gray-700 mb-3">Full Name*</label>
           <input
@@ -58,7 +40,6 @@ const Register = () => {
           />
         </div>
 
-        {/* Username */}
         <div className="mb-8">
           <label htmlFor="username" className="block text-2xl text-gray-700 mb-3">Username*</label>
           <input
@@ -66,13 +47,12 @@ const Register = () => {
             id="username"
             className="w-full px-6 py-4 border border-gray-300 rounded-lg text-xl focus:outline-none focus:ring-4 focus:ring-gray-500 text-black"
             placeholder="Enter your username"
-            value={username} // Đổi từ email thành username
-            onChange={(e) => setUsername(e.target.value)} // Đổi từ setEmail thành setUsername
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
 
-        {/* Mật khẩu */}
         <div className="mb-8">
           <label htmlFor="password" className="block text-2xl text-gray-700 mb-3">Password*</label>
           <input
@@ -86,7 +66,6 @@ const Register = () => {
           />
         </div>
 
-        {/* Hiển thị lỗi nếu có */}
         {errorMessage && (
           <div className="mb-8 text-red-500 text-xl text-center">{errorMessage}</div>
         )}

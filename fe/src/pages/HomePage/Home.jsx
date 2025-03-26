@@ -9,11 +9,11 @@ const Home = () => {
   return (
     <div className='flex flex-col bg-white items-center justify-center min-h-screen'>
       {/* Hiển thị tên người dùng nếu có */}
-      {userName && (
+      {/* {userName && (
         <div className="text-center mt-8">
           <h2 className="text-xl font-semibold text-gray-700">Welcome, {userName}!</h2>
         </div>
-      )}
+      )} */}
 
       {/* Hình ảnh Banner */}
       <div className="relative w-full group">
