@@ -15,12 +15,25 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser(username, password);
+  
+      // ✅ Lưu user và token vào localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+  
+      // ✅ Gọi context (nếu bạn dùng cho hiển thị ở Header)
       login(data.user.name);
-      navigate("/");
+  
+      // ✅ Chuyển hướng theo role
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       setErrorMessage(error.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col justify-center bg-white px-12 py-28">
