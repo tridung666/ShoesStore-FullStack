@@ -12,7 +12,7 @@ const connectDB = async () => {
     // Kết nối MongoDB (Không còn truyền useNewUrlParser, useUnifiedTopology)
     await mongoose.connect(dbURI);
 
-    console.log("🚀 MongoDB Connected to 'account' database");
+    console.log("🚀 MongoDB Connected to database");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err);
     process.exit(1);
