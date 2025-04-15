@@ -23,9 +23,9 @@ const Header = () => {
       </div>
 
       <nav className="flex flex-grow justify-center space-x-20 font-semibold ml-20">
-        <a href="/adidas" className="text-black text-xl hover:text-gray-600 transition-all">Adidas</a>
-        <a href="/nike" className="text-black text-xl hover:text-gray-600 transition-all">Nike</a>
-        <a href="/vans" className="text-black text-xl hover:text-gray-600 transition-all">Vans</a>
+        <a href="/Adidas" className="text-black text-xl hover:text-gray-600 transition-all">Adidas</a>
+        <a href="/Nike" className="text-black text-xl hover:text-gray-600 transition-all">Nike</a>
+        <a href="/Vans" className="text-black text-xl hover:text-gray-600 transition-all">Vans</a>
       </nav>
 
       <div className="flex items-center space-x-6">

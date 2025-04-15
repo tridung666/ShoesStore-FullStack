@@ -4,6 +4,8 @@ import Home from './pages/HomePage/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
+import Adidas from './pages/Adidas';
+import ErrorPage from './pages/Error';
 
 
 const RouteConfig = () => {
@@ -14,14 +16,10 @@ const RouteConfig = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/admin" element={<AdminDashboard />} />
-      {/* Route cho trang About
-      <Route path="/about" element={<About />} />
+      <Route path="/Adidas" element={<Adidas />} />
+      <Route path="/*" element={<ErrorPage />} />
 
-      Route cho trang chi tiết sản phẩm với tham số id
-      <Route path="/product/:id" element={<ProductDetail />} />
-
-      Route cho trang lỗi 404
-      <Route path="*" element={<ErrorPage />} /> */}
+     
     </Routes>
   )
 }
