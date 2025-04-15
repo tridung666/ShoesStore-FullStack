@@ -16,11 +16,6 @@ app.use(express.urlencoded({ extended: true })); // Cần thiết cho Postman g�
 app.use(cors());
 app.use(morgan("dev")); // Log các request đến server
 
-// Kiểm tra kết nối MongoDB
-app.get("/", (req, res) => {
-  res.send("🚀 Server is running and connected to MongoDB!");
-});
-
 // Routes
 app.use("/api/auth/", authRoutes);
 
