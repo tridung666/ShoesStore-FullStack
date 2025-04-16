@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchUsers, deleteUser } from "../services/admin.js"; // Import hàm từ services/admin
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -22,33 +23,23 @@ const AdminDashboard = () => {
       alert("Lỗi hệ thống, vui lòng đăng nhập lại!");
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   // ✅ Gọi API lấy danh sách người dùng
   useEffect(() => {
     if (user) {
-      fetch("http://localhost:5000/api/auth/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => res.json())
+      fetchUsers(token)
         .then((data) => setUsers(data))
         .catch((err) => console.error("Lỗi khi lấy user list:", err));
     }
-  }, [user]);
+  }, [user, token]);
 
   // ✅ Xử lý xoá người dùng
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xoá người dùng này không?")) {
       try {
-        await fetch(`http://localhost:5000/api/auth/users/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsers(users.filter((u) => u._id !== id));
+        await deleteUser(id, token); // Gọi API xóa người dùng
+        setUsers(users.filter((u) => u._id !== id)); // Cập nhật lại danh sách người dùng
       } catch (err) {
         console.error("❌ Lỗi khi xoá người dùng:", err);
         alert("Xoá thất bại!");
@@ -61,7 +52,9 @@ const AdminDashboard = () => {
   return (
     <div className="p-10 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-bold mb-6">📊 Admin Dashboard</h1>
-      <p className="mb-4 text-lg">Welcome, <strong>{user.name}</strong> (role: <strong>{user.role}</strong>)</p>
+      <p className="mb-4 text-lg">
+        Welcome, <strong>{user.name}</strong> (role: <strong>{user.role}</strong>)
+      </p>
 
       <div className="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
         <h2 className="text-2xl font-semibold mb-4">👥 User Accounts</h2>

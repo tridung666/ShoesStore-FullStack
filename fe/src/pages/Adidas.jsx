@@ -1,20 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
+import { fetchProductsByBrand } from "../services/productbybranch"; // Import hàm gọi API
 
 const Adidas = () => {
   const [sort, setSort] = useState("high");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const products = [
-    { name: "Classic Chuck", color: "White", price: 65 },
-    { name: "Air Max", color: "Red", price: 120 },
-    { name: "Nike React", color: "Blue", price: 140 },
-    { name: "Adidas NMD", color: "Grey", price: 130 },
-    { name: "New Balance", color: "Orange", price: 125 },
-  ];
+  // Lấy sản phẩm Adidas từ API
+  useEffect(() => {
+    const fetchAdidasProducts = async () => {
+      try {
+        const data = await fetchProductsByBrand("Adidas");  // Lấy sản phẩm Adidas
+        setProducts(data);
+      } catch (error) {
+        setError("Failed to fetch Adidas products");
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchAdidasProducts();
+  }, []);
+
+  // Sắp xếp sản phẩm theo giá
   const sorted = [...products].sort((a, b) =>
     sort === "high" ? b.price - a.price : a.price - b.price
   );
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="px-6 py-8">

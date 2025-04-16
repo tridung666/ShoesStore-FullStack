@@ -14,14 +14,14 @@ const Footer = () => {
 
         {/* Social Media Icons */}
         <div className="flex space-x-6 text-xl">
-          <a href="https://www.facebook.com/tran.tan.26047" className="text-black text-[30px] hover:text-blue-600"><FaFacebook /></a>
-          <a href="https://instagram.com" className="text-black text-[30px] hover:text-pink-600"><FaInstagram /></a>
-          <a href="https://twitter.com" className="text-black text-[30px] hover:text-blue-400"><FaTwitter /></a>
-          <a href="https://linkedin.com" className="text-black text-[30px] hover:text-blue-700"><FaLinkedin /></a>
-          <a href="https://youtube.com" className="text-black text-[30px] hover:text-red-600"><FaYoutube /></a>
+          <a href="https://www.facebook.com/tran.tan.26047" className=" text-[30px] text-blue-600"><FaFacebook /></a>
+          <a href="https://instagram.com" className=" text-[30px] text-pink-600"><FaInstagram /></a>
+          <a href="https://twitter.com" className=" text-[30px] text-blue-400"><FaTwitter /></a>
+          <a href="https://linkedin.com" className=" text-[30px] text-blue-700"><FaLinkedin /></a>
+          <a href="https://youtube.com" className=" text-[30px] text-red-600"><FaYoutube /></a>
         </div>
       </div>
-      
+
 
       <hr className="my-4 mx-auto border-black w-[95%] border-t-1 opacity-100" />
 

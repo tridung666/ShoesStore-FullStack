@@ -5,6 +5,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import Adidas from './pages/Adidas';
+import Nike from './pages/Nike';
+import Vans from './pages/Vans';
+
 import ErrorPage from './pages/Error';
 
 
@@ -17,6 +20,9 @@ const RouteConfig = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/Adidas" element={<Adidas />} />
+      <Route path="/Nike" element={<Nike />} />
+      <Route path="/Vans" element={<Vans />} />
+      {/* Route không tồn tại */}
       <Route path="/*" element={<ErrorPage />} />
 
      
