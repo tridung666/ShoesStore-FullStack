@@ -1,19 +1,22 @@
-import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import logo from "../assets/images/J97.png";
-import { FiSearch } from "react-icons/fi";
-import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../redux/slices/authSlice.jsx';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import logo from '../assets/images/J97.png';
+import { FiSearch } from 'react-icons/fi';
+import { FaUserCircle, FaShoppingCart } from 'react-icons/fa';
 
 const Header = () => {
-  const { userName, logout } = useContext(AuthContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
+  const userName = user?.name;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     setIsMenuOpen(false);
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -23,9 +26,9 @@ const Header = () => {
       </div>
 
       <nav className="flex flex-grow justify-center space-x-20 font-semibold ml-20">
-        <a href="/Adidas" className="text-black text-xl hover:text-gray-600 transition-all">Adidas</a>
-        <a href="/Nike" className="text-black text-xl hover:text-gray-600 transition-all">Nike</a>
-        <a href="/Vans" className="text-black text-xl hover:text-gray-600 transition-all">Vans</a>
+        <Link to="/Adidas" className="text-black text-xl hover:text-gray-600 transition-all">Adidas</Link>
+        <Link to="/Nike" className="text-black text-xl hover:text-gray-600 transition-all">Nike</Link>
+        <Link to="/Vans" className="text-black text-xl hover:text-gray-600 transition-all">Vans</Link>
       </nav>
 
       <div className="flex items-center space-x-6">
@@ -38,15 +41,26 @@ const Header = () => {
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
 
+        {/* Nút tài khoản */}
         <div className="flex space-x-4 relative">
           {userName ? (
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all"
-            >
-              <FaUserCircle className="text-2xl" />
-              <span>{userName}</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all"
+              >
+                <FaUserCircle className="text-2xl" />
+                <span>{userName}</span>
+              </button>
+
+              {/* Nút My Orders */}
+              <Link
+                to="/my-orders"
+                className="text-sm text-gray-600 hover:text-black underline"
+              >
+                My Orders
+              </Link>
+            </div>
           ) : (
             <Link to="/login" className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all">
               <FaUserCircle className="text-2xl" />
@@ -64,9 +78,10 @@ const Header = () => {
           )}
         </div>
 
-        <button className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all">
+        {/* Nút giỏ hàng */}
+        <Link to="/cart" className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all">
           <FaShoppingCart className="text-2xl" />
-        </button>
+        </Link>
       </div>
     </div>
   );

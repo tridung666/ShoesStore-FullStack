@@ -1,21 +1,27 @@
 const express = require('express');
-const { createProduct, getAllProducts, getProductById, deleteProduct, getProductsByBrand } = require('../controllers/productController');
+const {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  deleteProduct,
+  getProductsByBrand
+} = require('../controllers/productController');
 
 const router = express.Router();
 
-// Route POST để tạo sản phẩm mới
-router.post('/products', createProduct);
+// POST /api/products
+router.post('/', createProduct);
 
-// Route GET để lấy tất cả sản phẩm
-router.get('/products', getAllProducts);
+// GET /api/products
+router.get('/', getAllProducts);
 
-// Route GET để lấy sản phẩm theo ID
-router.get('/products/:id', getProductById);
+// GET /api/products/:id
+router.get('/:id', getProductById);
 
-// Route DELETE để xoá sản phẩm
-router.delete('/products/:id', deleteProduct);
+// DELETE /api/products/:id
+router.delete('/:id', deleteProduct);
 
-router.get('/products/brand/:brand', getProductsByBrand);  // Route GET để lấy sản phẩm theo brand
-
+// GET /api/products/brand/:brand
+router.get('/brand/:brand', getProductsByBrand);
 
 module.exports = router;

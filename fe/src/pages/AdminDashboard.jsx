@@ -1,104 +1,114 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchUsers, deleteUser } from "../services/admin.js"; // Import hàm từ services/admin
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {
+  useGetAllUsersQuery,
+  useDeleteUserMutation,
+  useCreateUserMutation,
+  useUpdateUserMutation
+} from '../redux/apis/authApi.jsx';
+import PageWrapper from "../components/PageWrapper";
+
 
 const AdminDashboard = () => {
+  const [formData, setFormData] = useState({ name: '', username: '', password: '', role: 'user' });
+  const [editingUserId, setEditingUserId] = useState(null);
+
+  const { data: users = [], isLoading, error } = useGetAllUsersQuery();
+  const [deleteUser] = useDeleteUserMutation();
+  const [createUser] = useCreateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [users, setUsers] = useState([]);
-  const token = localStorage.getItem("token");
 
-  // ✅ Kiểm tra quyền admin
-  useEffect(() => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (!storedUser || storedUser.role.toLowerCase() !== "admin") {
-        alert("Bạn không có quyền truy cập trang admin!");
-        navigate("/");
-      } else {
-        setUser(storedUser);
-      }
-    } catch (err) {
-      console.error("❌ Lỗi đọc localStorage:", err);
-      alert("Lỗi hệ thống, vui lòng đăng nhập lại!");
-      navigate("/login");
-    }
-  }, [navigate]);
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  // ✅ Gọi API lấy danh sách người dùng
-  useEffect(() => {
-    if (user) {
-      fetchUsers(token)
-        .then((data) => setUsers(data))
-        .catch((err) => console.error("Lỗi khi lấy user list:", err));
-    }
-  }, [user, token]);
+  const handleEdit = (user) => {
+    setEditingUserId(user._id);
+    setFormData({
+      name: user.name,
+      username: user.username,
+      password: '', // nhập lại mật khẩu
+      role: user.role
+    });
+  };
 
-  // ✅ Xử lý xoá người dùng
   const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc muốn xoá người dùng này không?")) {
-      try {
-        await deleteUser(id, token); // Gọi API xóa người dùng
-        setUsers(users.filter((u) => u._id !== id)); // Cập nhật lại danh sách người dùng
-      } catch (err) {
-        console.error("❌ Lỗi khi xoá người dùng:", err);
-        alert("Xoá thất bại!");
-      }
+    try {
+      await deleteUser(id).unwrap();
+    } catch (err) {
+      alert("Xoá thất bại!");
     }
   };
 
-  if (!user) return null;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingUserId) {
+        await updateUser({ id: editingUserId, ...formData }).unwrap();
+      } else {
+        await createUser(formData).unwrap();
+      }
+      setFormData({ name: '', username: '', password: '', role: 'user' });
+      setEditingUserId(null);
+    } catch (err) {
+      alert("Lưu thất bại!");
+    }
+  };
+
+  if (isLoading) return <div className="p-10">Đang tải người dùng...</div>;
+  if (error) return <div className="p-10 text-red-600">Không thể tải danh sách người dùng</div>;
 
   return (
-    <div className="p-10 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold mb-6">📊 Admin Dashboard</h1>
-      <p className="mb-4 text-lg">
-        Welcome, <strong>{user.name}</strong> (role: <strong>{user.role}</strong>)
-      </p>
+    <div className="p-10">
+      <h1 className="text-3xl font-bold mb-4">Admin Dashboard - User Management</h1>
 
-      <div className="bg-white shadow-md rounded-lg p-6 overflow-x-auto">
-        <h2 className="text-2xl font-semibold mb-4">👥 User Accounts</h2>
-        <table className="min-w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-gray-200 text-left">
-              <th className="p-3 border">Name</th>
-              <th className="p-3 border">Username</th>
-              <th className="p-3 border">Role</th>
-              <th className="p-3 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u) => (
-              <tr key={u._id} className="hover:bg-gray-50">
-                <td className="p-3 border">{u.name}</td>
-                <td className="p-3 border">{u.username}</td>
-                <td className="p-3 border">{u.role}</td>
-                <td className="p-3 border space-x-2">
-                  <button
-                    onClick={() => alert(JSON.stringify(u, null, 2))}
-                    className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 text-sm"
-                  >
-                    View
-                  </button>
-                  <button
-                    onClick={() => handleDelete(u._id)}
-                    className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 text-sm"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {users.length === 0 && (
-              <tr>
-                <td colSpan="4" className="text-center p-4 text-gray-500">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {/* Menu admin */}
+      <div className="flex space-x-6 mb-8 border-b pb-3">
+        <button onClick={() => navigate('/admin')} className="text-blue-600 font-semibold hover:underline">User Management</button>
+        <button onClick={() => navigate('/admin/products')} className="text-blue-600 font-semibold hover:underline">Product Management</button>
+        <button onClick={() => navigate('/admin/orders')} className="text-blue-600 font-semibold hover:underline">Order Management</button>
       </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4 mb-10">
+        <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border p-2 w-full" />
+        <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" required className="border p-2 w-full" />
+        <input name="password" value={formData.password} onChange={handleChange} placeholder="Password" required className="border p-2 w-full" />
+        <select name="role" value={formData.role} onChange={handleChange} className="border p-2 w-full">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit" className="bg-green-600 text-white px-4 py-2">
+          {editingUserId ? 'Update' : 'Add'} User
+        </button>
+      </form>
+
+      {/* Table */}
+      <table className="w-full border">
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="border p-2">Name</th>
+            <th className="border p-2">Username</th>
+            <th className="border p-2">Role</th>
+            <th className="border p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user._id}>
+              <td className="border p-2">{user.name}</td>
+              <td className="border p-2">{user.username}</td>
+              <td className="border p-2">{user.role}</td>
+              <td className="border p-2 space-x-2">
+                <button onClick={() => handleEdit(user)} className="px-3 py-1 bg-blue-500 text-white">Edit</button>
+                <button onClick={() => handleDelete(user._id)} className="px-3 py-1 bg-red-500 text-white">Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
