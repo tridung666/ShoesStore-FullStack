@@ -30,6 +30,15 @@ export const authApi = createApi({
       }),
     }),
 
+    // ✅ Đổi mật khẩu
+    changePassword: builder.mutation({
+      query: ({ currentPassword, newPassword }) => ({
+        url: '/api/auth/change-password',
+        method: 'PUT',
+        body: { currentPassword, newPassword },
+      }),
+    }),
+
     // ✅ Lấy danh sách người dùng
     getAllUsers: builder.query({
       query: () => '/api/auth/users',
@@ -74,4 +83,5 @@ export const {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useChangePasswordMutation,  // Import hook mới cho thay đổi mật khẩu
 } = authApi;

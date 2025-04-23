@@ -1,4 +1,3 @@
-// models/Order.js
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
@@ -10,6 +9,7 @@ const orderSchema = new mongoose.Schema({
     price: { type: Number, required: true },
   }],
   totalPrice: { type: Number, required: true },
+  phone: { type: String }, // ✅ thêm dòng này để lưu số điện thoại người nhận
   status: { type: String, enum: ['pending', 'shipped', 'delivered', 'canceled'], default: 'pending' },
   orderDate: { type: Date, default: Date.now },
   deliveryAddress: { type: String, required: true },

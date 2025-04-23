@@ -24,7 +24,7 @@ export const orderApi = createApi({
 
     // ✅ Lấy đơn hàng của người dùng hiện tại
     getMyOrders: builder.query({
-      query: () => '/api/orders/my',
+      query: () => '/api/orders/my-orders',
       providesTags: ['Order'],
     }),
 
@@ -37,7 +37,7 @@ export const orderApi = createApi({
     // ✅ Cập nhật trạng thái đơn hàng (admin)
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({
-        url: `/api/orders/${orderId}`,
+        url: `/api/orders/${orderId}/status`, // ✅ ĐÃ SỬA
         method: 'PUT',
         body: { status },
       }),

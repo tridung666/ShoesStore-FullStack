@@ -5,9 +5,9 @@ import { clearCart } from "../redux/slices/cartSlice.jsx";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 
-
 const OrderForm = () => {
   const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState(""); // ✅ Thêm state cho số điện thoại
   const cartItems = useSelector((state) => state.cart.cartItems);
   const total = useSelector((state) => state.cart.totalPrice);
   const user = useSelector((state) => state.auth.user);
@@ -23,10 +23,16 @@ const OrderForm = () => {
       return;
     }
 
+    if (!phone.trim()) {
+      alert("Vui lòng nhập số điện thoại!");
+      return;
+    }
+
     const orderData = {
       userId: user._id,
       deliveryAddress: address,
       totalPrice: total,
+      phone, // ✅ Gửi phone kèm nếu bạn muốn xử lý ở backend
       products: cartItems.map((item) => ({
         productId: item.productId,
         size: item.size,
@@ -38,7 +44,7 @@ const OrderForm = () => {
     try {
       await createOrder(orderData).unwrap();
       dispatch(clearCart());
-      navigate("/"); // hoặc navigate("/orders") nếu có
+      navigate("/");
     } catch (err) {
       alert("Lỗi khi đặt hàng: " + (err.data?.message || err.error));
     }
@@ -57,6 +63,15 @@ const OrderForm = () => {
           rows={4}
           required
         ></textarea>
+
+        <input
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Nhập số điện thoại..."
+          className="w-full p-4 border rounded"
+          required
+        />
 
         <div className="text-lg">
           <strong>Total: </strong>${total}

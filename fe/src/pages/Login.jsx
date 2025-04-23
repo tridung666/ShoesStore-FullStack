@@ -22,7 +22,7 @@ const Login = () => {
       localStorage.setItem("token", res.token);
 
       if (res.user.role === "admin") {
-        navigate("/admin/account");
+        navigate("/");
       } else {
         navigate("/");
       }

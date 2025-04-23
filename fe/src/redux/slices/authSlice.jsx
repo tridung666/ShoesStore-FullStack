@@ -21,8 +21,16 @@ const authSlice = createSlice({
       localStorage.removeItem('user');
       localStorage.removeItem('token');
     },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+      localStorage.setItem('user', JSON.stringify(action.payload));
+    },
+    updatePassword: (state, action) => {
+      state.user.password = action.payload.newPassword; // Giả sử bạn muốn lưu mật khẩu mới vào user
+      localStorage.setItem('user', JSON.stringify(state.user)); // Cập nhật lại localStorage
+    },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, updateUser, updatePassword } = authSlice.actions;
 export default authSlice.reducer;

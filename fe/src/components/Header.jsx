@@ -11,6 +11,7 @@ const Header = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const userName = user?.name;
+  const userRole = user?.role;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -22,8 +23,11 @@ const Header = () => {
   return (
     <div className="w-full bg-white text-black h-[100px] flex items-center px-10 border-gray-200 shadow-md">
       <div className="flex items-center">
-        <img src={logo} alt="logo" className="h-16" />
+        <Link to="/">
+          <img src={logo} alt="logo" className="h-16 cursor-pointer" />
+        </Link>
       </div>
+
 
       <nav className="flex flex-grow justify-center space-x-20 font-semibold ml-20">
         <Link to="/Adidas" className="text-black text-xl hover:text-gray-600 transition-all">Adidas</Link>
@@ -41,7 +45,6 @@ const Header = () => {
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
 
-        {/* Nút tài khoản */}
         <div className="flex space-x-4 relative">
           {userName ? (
             <div className="flex items-center space-x-2">
@@ -53,7 +56,6 @@ const Header = () => {
                 <span>{userName}</span>
               </button>
 
-              {/* Nút My Orders */}
               <Link
                 to="/my-orders"
                 className="text-sm text-gray-600 hover:text-black underline"
@@ -69,16 +71,34 @@ const Header = () => {
           )}
 
           {userName && isMenuOpen && (
-            <button
-              onClick={handleLogout}
-              className="absolute right-0 top-14 w-32 bg-white text-black border border-gray-300 rounded shadow-lg text-left p-2 text-sm z-50"
-            >
-              Log out
-            </button>
+            <div className="absolute right-0 top-14 w-48 bg-white text-black border border-gray-300 rounded shadow-lg text-left p-2 text-sm z-50 space-y-2">
+              {userRole === 'admin' && (
+                <>
+                  <Link to="/admin/account" onClick={() => setIsMenuOpen(false)} className="block hover:bg-gray-100 p-2 rounded">
+                    Admin Dashboard
+                  </Link>
+                  <Link to="/admin/products" onClick={() => setIsMenuOpen(false)} className="block hover:bg-gray-100 p-2 rounded">
+                    Quản lý sản phẩm
+                  </Link>
+                  <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="block hover:bg-gray-100 p-2 rounded">
+                    Quản lý đơn hàng
+                  </Link>
+                  <hr className="border-t border-gray-300" />
+                </>
+              )}
+              <Link to="/change-password" onClick={() => setIsMenuOpen(false)} className="block hover:bg-gray-100 p-2 rounded">
+                  Change Password
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                Log out
+              </button>
+            </div>
           )}
         </div>
 
-        {/* Nút giỏ hàng */}
         <Link to="/cart" className="flex items-center space-x-2 p-2 text-black hover:text-gray-600 transition-all">
           <FaShoppingCart className="text-2xl" />
         </Link>
