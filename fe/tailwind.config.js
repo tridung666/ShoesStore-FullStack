@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'primary': '#426B1F',  // Màu chính
+        'secondary': '#FAFAF5', // Màu phụ
+        'accent': '#5733FF',    // Màu nhấn
+      },
+    },
   },
   plugins: [],
 }

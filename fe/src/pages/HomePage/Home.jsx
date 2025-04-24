@@ -1,12 +1,14 @@
 import React from 'react'
 import Banner from '../../assets/images/Banner.png'
 import BestSellers from './BestSellers'
+import PageWrapper from '../../components/PageWrapper';
 
 const Home = () => {
   // Lấy tên người dùng từ localStorage
   const userName = localStorage.getItem("userName");
 
   return (
+    <PageWrapper>
     <div className='flex flex-col bg-white items-center justify-center min-h-screen'>
       {/* Hiển thị tên người dùng nếu có */}
       {/* {userName && (
@@ -34,6 +36,7 @@ const Home = () => {
       {/* Hiển thị Best Sellers */}
       <BestSellers />
     </div>
+    </PageWrapper>
   )
 }
 

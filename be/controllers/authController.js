@@ -92,30 +92,55 @@ const loginUser = async (req, res) => {
 // ✅ Lấy danh sách tất cả người dùng (chỉ admin)
 const getAllUsers = async (req, res) => {
     try {
-      const users = await User.find({}, "-password"); // bỏ mật khẩu
-      res.status(200).json(users);
+        const users = await User.find({}, "-password"); // bỏ mật khẩu
+        res.status(200).json(users);
     } catch (error) {
-      res.status(500).json({ message: "Lỗi khi lấy danh sách người dùng", error: error.message });
+        res.status(500).json({ message: "Lỗi khi lấy danh sách người dùng", error: error.message });
     }
-  };
-  
+};
+
 // ✅ Xoá người dùng theo ID (chỉ admin)
 const deleteUserById = async (req, res) => {
     try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
-      if (!deletedUser) {
-        return res.status(404).json({ message: "Không tìm thấy người dùng để xoá" });
-      }
-      res.status(200).json({ message: "Đã xoá người dùng thành công!" });
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng để xoá" });
+        }
+        res.status(200).json({ message: "Đã xoá người dùng thành công!" });
     } catch (error) {
-      res.status(500).json({ message: "Lỗi khi xoá người dùng", error: error.message });
+        res.status(500).json({ message: "Lỗi khi xoá người dùng", error: error.message });
     }
-  };
-  
-  module.exports = {
+};
+
+// ✅ Thay đổi mật khẩu
+const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        // Lấy người dùng từ DB bằng userId
+        const user = await User.findById(req.user.id);
+
+        // Kiểm tra mật khẩu cũ
+        if (currentPassword !== user.password) {
+            return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
+        }
+
+        // Cập nhật mật khẩu mới (không mã hóa)
+        user.password = newPassword;
+
+        // Lưu lại mật khẩu mới vào cơ sở dữ liệu
+        await user.save();
+
+        res.status(200).json({ message: "Mật khẩu đã được thay đổi thành công!" });
+    } catch (err) {
+        res.status(500).json({ message: "Lỗi khi thay đổi mật khẩu", error: err.message });
+    }
+};
+
+module.exports = {
     registerUser,
     loginUser,
     getAllUsers,
-    deleteUserById
-  };
-  
+    deleteUserById,
+    changePassword // Thêm tính năng đổi mật khẩu
+};
