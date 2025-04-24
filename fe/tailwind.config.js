@@ -8,7 +8,7 @@ export default {
     extend: {
       colors: {
         'primary': '#426B1F',  // Màu chính
-        'secondary': '#33FF57', // Màu phụ
+        'secondary': '#FAFAF5', // Màu phụ
         'accent': '#5733FF',    // Màu nhấn
       },
     },

@@ -1,22 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useGetProductByIdQuery } from "../redux/apis/productApi"; // Import API hook
-import { handleAddToCart } from "../redux/actions/cartActions"; // Import handleAddToCart
+import { useGetProductByIdQuery } from "../redux/apis/productApi";
+import { handleAddToCart } from "../redux/actions/cartActions";
 import PageWrapper from "../components/PageWrapper";
 
 const ProductDetail = () => {
-  const { id } = useParams(); // Lấy ID sản phẩm từ URL
-  const dispatch = useDispatch(); // Sử dụng dispatch từ Redux
+  const { id } = useParams();
+  const dispatch = useDispatch();
 
-  // Fetching product details using Redux API hook
   const { data: product, error, isLoading } = useGetProductByIdQuery(id);
 
   const [selectedColor, setSelectedColor] = useState("White");
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // Lấy danh sách kích thước từ product.size
   const sizes = product?.size || [];
 
   const handleAddToCartClick = () => {
@@ -35,7 +33,6 @@ const ProductDetail = () => {
       quantity,
     };
 
-    // Gọi hàm handleAddToCart từ cartActions
     handleAddToCart(dispatch, productToAdd);
   };
 
@@ -74,9 +71,9 @@ const ProductDetail = () => {
             <h3 className="mb-2">Color</h3>
             <div className="flex gap-2">
               <button
-                className={`px-4 py-2 ${
+                className={`px-4 py-2 rounded-full ${
                   selectedColor === "White"
-                    ? "bg-green-700 text-white"
+                    ? "bg-primary text-white"
                     : "border border-gray-300"
                 }`}
                 onClick={() => setSelectedColor("White")}
@@ -93,9 +90,9 @@ const ProductDetail = () => {
               {sizes.map((size) => (
                 <button
                   key={size}
-                  className={`border border-gray-300 p-2 text-center ${
-                    selectedSize === size ? "border-black" : ""
-                  } hover:border-black`}
+                  className={`border border-gray-300 p-2 text-center rounded-full ${
+                    selectedSize === size ? "border-primary bg-primary text-white" : ""
+                  } hover:border-primary hover:bg-primary hover:text-white transition`}
                   onClick={() => setSelectedSize(size)}
                 >
                   {size}
@@ -112,19 +109,19 @@ const ProductDetail = () => {
                 min="1"
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded-full text-center"
               />
             </div>
           </div>
 
           <button
-            className="bg-green-700 text-white py-3 w-full rounded"
-            onClick={handleAddToCartClick} // Gọi hàm khi nhấn nút
+            className="bg-primary text-white py-3 w-full rounded-full font-semibold text-lg shadow hover:bg-green-800 transition"
+            onClick={handleAddToCartClick}
           >
             Add to Cart
           </button>
 
-          <button className="border border-gray-300 py-3 w-full rounded">
+          <button className="border border-primary text-primary py-3 w-full rounded-full font-semibold text-lg shadow hover:bg-primary hover:text-white transition">
             Buy Now
           </button>
 

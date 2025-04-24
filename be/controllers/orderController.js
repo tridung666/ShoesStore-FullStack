@@ -23,7 +23,7 @@ exports.createOrder = async (req, res) => {
 exports.getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id })
-      .populate('userId', 'name phone') // 👈 Lấy tên + SĐT người dùng
+      .populate('userId', 'name') // 👈 Lấy tên + SĐT người dùng
       .populate('products.productId', 'name'); // 👈 Lấy tên sản phẩm
 
     res.status(200).json(orders);
@@ -40,6 +40,7 @@ exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate('userId', 'name email') // 👈 chỉ lấy name và email
+      .populate('products.productId', 'name')
       .sort({ createdAt: -1 });
 
     res.status(200).json(orders);

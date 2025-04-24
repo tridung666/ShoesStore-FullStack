@@ -7,7 +7,7 @@ import PageWrapper from "../components/PageWrapper";
 
 const OrderForm = () => {
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState(""); // ✅ Thêm state cho số điện thoại
+  const [phone, setPhone] = useState("");
   const cartItems = useSelector((state) => state.cart.cartItems);
   const total = useSelector((state) => state.cart.totalPrice);
   const user = useSelector((state) => state.auth.user);
@@ -32,7 +32,7 @@ const OrderForm = () => {
       userId: user._id,
       deliveryAddress: address,
       totalPrice: total,
-      phone, // ✅ Gửi phone kèm nếu bạn muốn xử lý ở backend
+      phone,
       products: cartItems.map((item) => ({
         productId: item.productId,
         size: item.size,
@@ -51,40 +51,43 @@ const OrderForm = () => {
   };
 
   return (
-    <div className="p-10 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Delivery Information</h1>
+    <div className="py-12 px-4 min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-10">
+        <h1 className="text-3xl font-bold mb-8 text-green-700 text-center">Thông tin giao hàng</h1>
 
-      <form onSubmit={handlePlaceOrder} className="space-y-4">
-        <textarea
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Nhập địa chỉ giao hàng..."
-          className="w-full p-4 border rounded"
-          rows={4}
-          required
-        ></textarea>
+        <form onSubmit={handlePlaceOrder} className="space-y-6">
+          <textarea
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Nhập địa chỉ giao hàng..."
+            className="w-full p-4 border-2 border-green-200 rounded-2xl focus:border-green-400 focus:ring-2 focus:ring-green-100 transition"
+            rows={4}
+            required
+          ></textarea>
 
-        <input
-          type="text"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Nhập số điện thoại..."
-          className="w-full p-4 border rounded"
-          required
-        />
+          <input
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Nhập số điện thoại..."
+            className="w-full p-4 border-2 border-green-200 rounded-2xl focus:border-green-400 focus:ring-2 focus:ring-green-100 transition"
+            required
+          />
 
-        <div className="text-lg">
-          <strong>Total: </strong>${total}
-        </div>
+          <div className="text-lg text-right mb-2">
+            <strong>Tổng cộng: </strong>
+            <span className="text-2xl text-green-700 font-bold">${total}</span>
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded text-xl"
-          disabled={isLoading}
-        >
-          {isLoading ? "Đang xử lý..." : "Đặt hàng"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white py-3 rounded-2xl text-xl font-semibold shadow-lg transition disabled:opacity-60"
+            disabled={isLoading}
+          >
+            {isLoading ? "Đang xử lý..." : "Đặt hàng"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

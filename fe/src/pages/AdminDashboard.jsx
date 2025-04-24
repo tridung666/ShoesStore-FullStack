@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   useGetAllUsersQuery,
@@ -7,8 +6,7 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation
 } from '../redux/apis/authApi.jsx';
-import PageWrapper from "../components/PageWrapper";
-
+import { FaEdit, FaTrashAlt, FaBoxOpen, FaClipboardList } from "react-icons/fa";
 
 const AdminDashboard = () => {
   const [formData, setFormData] = useState({ name: '', username: '', password: '', role: 'user' });
@@ -29,7 +27,7 @@ const AdminDashboard = () => {
     setFormData({
       name: user.name,
       username: user.username,
-      password: '', // nhập lại mật khẩu
+      password: '',
       role: user.role
     });
   };
@@ -61,54 +59,82 @@ const AdminDashboard = () => {
   if (error) return <div className="p-10 text-red-600">Không thể tải danh sách người dùng</div>;
 
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold mb-4">Admin Dashboard - User Management</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-0">
+      <div className="max-w-5xl mx-auto py-10">
+        <h1 className="text-4xl font-extrabold text-center text-green-700 mb-2 drop-shadow">Admin Dashboard</h1>
 
-      {/* Menu admin */}
-      <div className="flex space-x-6 mb-8 border-b pb-3">
-        <button onClick={() => navigate('/admin')} className="text-blue-600 font-semibold hover:underline">User Management</button>
-        <button onClick={() => navigate('/admin/products')} className="text-blue-600 font-semibold hover:underline">Product Management</button>
-        <button onClick={() => navigate('/admin/orders')} className="text-blue-600 font-semibold hover:underline">Order Management</button>
+        {/* Menu admin chỉ còn 2 mục */}
+        <div className="flex justify-center space-x-6 mb-10">
+          <button onClick={() => navigate('/admin/products')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
+            <FaBoxOpen /> Product Management
+          </button>
+          <button onClick={() => navigate('/admin/orders')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
+            <FaClipboardList /> Order Management
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8 mb-12 max-w-xl mx-auto space-y-4 border border-green-100">
+          <h2 className="text-2xl font-bold text-green-600 mb-2">{editingUserId ? 'Edit User' : 'Add New User'}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
+            <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
+            <input name="password" value={formData.password} onChange={handleChange} placeholder="Password" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2" />
+            <select name="role" value={formData.role} onChange={handleChange} className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div className="flex justify-end">
+            <button type="submit" className="bg-primary hover:bg-green-900 text-white font-semibold px-6 py-2 rounded-lg transition">
+              {editingUserId ? 'Update' : 'Add'} User
+            </button>
+          </div>
+        </form>
+
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-green-100">
+          <h2 className="text-xl font-bold text-green-600 mb-4">User List</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-center">
+              <thead>
+                <tr className="bg-green-100 text-green-700">
+                  <th className="p-3">Name</th>
+                  <th className="p-3">Username</th>
+                  <th className="p-3">Role</th>
+                  <th className="p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user._id} className="hover:bg-green-50 transition">
+                    <td className="p-3">{user.name}</td>
+                    <td className="p-3">{user.username}</td>
+                    <td className="p-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'admin' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-700'}`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="p-3 space-x-2">
+                      <button onClick={() => handleEdit(user)} className="p-2 rounded-full bg-blue-500 hover:bg-blue-700 text-white transition" title="Edit">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDelete(user._id)} className="p-2 rounded-full bg-red-500 hover:bg-red-700 text-white transition" title="Delete">
+                        <FaTrashAlt />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="py-8 text-gray-400">No users found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 mb-10">
-        <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border p-2 w-full" />
-        <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" required className="border p-2 w-full" />
-        <input name="password" value={formData.password} onChange={handleChange} placeholder="Password" required className="border p-2 w-full" />
-        <select name="role" value={formData.role} onChange={handleChange} className="border p-2 w-full">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button type="submit" className="bg-green-600 text-white px-4 py-2">
-          {editingUserId ? 'Update' : 'Add'} User
-        </button>
-      </form>
-
-      {/* Table */}
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Name</th>
-            <th className="border p-2">Username</th>
-            <th className="border p-2">Role</th>
-            <th className="border p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td className="border p-2">{user.name}</td>
-              <td className="border p-2">{user.username}</td>
-              <td className="border p-2">{user.role}</td>
-              <td className="border p-2 space-x-2">
-                <button onClick={() => handleEdit(user)} className="px-3 py-1 bg-blue-500 text-white">Edit</button>
-                <button onClick={() => handleDelete(user._id)} className="px-3 py-1 bg-red-500 text-white">Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
