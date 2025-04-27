@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   brand: { type: String, required: true },
   size: { type: [Number], required: true }, // Mảng các kích cỡ có sẵn
-  color: { type: String, required: true },
+  color: { type: [String], required: true }, // Đổi thành mảng các màu
   price: { type: Number, required: true },
   description: { type: String, required: true },
   image: { type: String, required: true }, // URL của hình ảnh sản phẩm

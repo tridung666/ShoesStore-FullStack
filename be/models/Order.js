@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema({
   products: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     size: { type: Number, required: true },
+    color: { type: String, required: true },   // ✅ thêm dòng này
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
   }],

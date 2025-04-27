@@ -26,8 +26,10 @@ const authSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload));
     },
     updatePassword: (state, action) => {
-      state.user.password = action.payload.newPassword; // Giả sử bạn muốn lưu mật khẩu mới vào user
-      localStorage.setItem('user', JSON.stringify(state.user)); // Cập nhật lại localStorage
+      if (state.user) {
+        state.user.password = action.payload.newPassword;
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
     },
   },
 });

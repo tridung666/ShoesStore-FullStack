@@ -1,14 +1,28 @@
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 
-// ✅ Tạo đơn hàng mới
+// ✅ Tạo đơn hàng mới (server tự tính totalPrice)
 exports.createOrder = async (req, res) => {
   try {
+    const { products, deliveryAddress, phone } = req.body;
+    const userId = req.user.id;
+
+    let totalPrice = 0;
+
+    for (const item of products) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({ message: `Không tìm thấy sản phẩm ${item.productId}` });
+      }
+      totalPrice += product.price * item.quantity;
+    }
+
     const newOrder = new Order({
-      userId: req.user.id,
-      products: req.body.products,
-      totalPrice: req.body.totalPrice,
-      deliveryAddress: req.body.deliveryAddress,
-      phone: req.body.phone // ✅ Gán số điện thoại từ frontend
+      userId,
+      products,
+      totalPrice,
+      deliveryAddress,
+      phone,
     });
 
     const savedOrder = await newOrder.save();
@@ -18,13 +32,12 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-
 // ✅ Người dùng xem đơn hàng của chính mình
 exports.getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id })
-      .populate('userId', 'name') // 👈 Lấy tên + SĐT người dùng
-      .populate('products.productId', 'name'); // 👈 Lấy tên sản phẩm
+      .populate('userId', 'name')
+      .populate('products.productId', 'name');
 
     res.status(200).json(orders);
   } catch (err) {
@@ -35,11 +48,11 @@ exports.getMyOrders = async (req, res) => {
   }
 };
 
-// ✅ Admin xem tất cả đơn hàng (CÓ POPULATE)
+// ✅ Admin xem tất cả đơn hàng
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate('userId', 'name email') // 👈 chỉ lấy name và email
+      .populate('userId', 'name email')
       .populate('products.productId', 'name')
       .sort({ createdAt: -1 });
 
@@ -57,7 +70,10 @@ exports.updateOrderStatus = async (req, res) => {
       { status: req.body.status },
       { new: true }
     );
-    if (!updatedOrder) return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
 
     res.status(200).json(updatedOrder);
   } catch (err) {

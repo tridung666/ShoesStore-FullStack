@@ -18,13 +18,20 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await loginUser({ username, password }).unwrap();
-      dispatch(loginSuccess(res)); // Cập nhật redux
+
+      // ✅ Cập nhật Redux đúng cách
+      dispatch(loginSuccess({
+        user: res.user,    // 👈 phải tách đúng user và token
+        token: res.token,
+      }));
+
+      // ✅ Lưu token vào localStorage (user đã lưu bên slice rồi)
       localStorage.setItem("token", res.token);
 
       if (res.user.role === "admin") {
-        navigate("/");
+        navigate("/"); // Admin về homepage (hoặc dashboard tuỳ bạn)
       } else {
-        navigate("/");
+        navigate("/"); // User thường cũng về homepage
       }
     } catch (err) {
       setErrorMessage(err?.data?.message || "Login failed");
