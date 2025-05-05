@@ -3,27 +3,22 @@ const {
   registerUser,
   loginUser,
   getAllUsers,
+  getUserById,
   deleteUserById,
-  changePassword, // Thêm import cho changePassword
+  updateUser,
+  changePassword
 } = require("../controllers/authController");
 
 const { authenticateUser, authorizeRoles } = require("../middlewares/auth");
 
 const router = express.Router();
 
-// Register a new user
 router.post("/register", registerUser);
-
-// Login an existing user
 router.post("/login", loginUser);
-
-// Get all users (admin only)
 router.get("/users", authenticateUser, authorizeRoles("admin"), getAllUsers);
-
-// Delete user by ID (admin only)
+router.get("/users/:id", authenticateUser, authorizeRoles("admin"), getUserById);
+router.put("/users/:id", authenticateUser, authorizeRoles("admin"), updateUser); // ✅ thêm dòng này
 router.delete("/users/:id", authenticateUser, authorizeRoles("admin"), deleteUserById);
-
-// Add route for changing password (only authenticated users can access this route)
-router.put("/change-password", authenticateUser, changePassword); // Route để thay đổi mật khẩu
+router.put("/change-password", authenticateUser, changePassword);
 
 module.exports = router;

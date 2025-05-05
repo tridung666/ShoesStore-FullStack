@@ -4,7 +4,7 @@ import {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation
-} from '../redux/apis/productApi.jsx';
+} from '../../redux/apis/productApi.jsx';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrashAlt, FaUsers, FaClipboardList } from "react-icons/fa";
 
@@ -36,7 +36,8 @@ const ProductManager = () => {
     setEditingId(product._id);
     setFormData({
       ...product,
-      size: product.size.join(', ')
+      size: product.size.join(', '),
+      color: Array.isArray(product.color) ? product.color.join(', ') : product.color // chuyển thành chuỗi
     });
   };
 
@@ -53,6 +54,7 @@ const ProductManager = () => {
     const payload = {
       ...formData,
       size: formData.size.split(',').map(s => Number(s.trim())),
+      color: formData.color.split(',').map(c => c.trim()), // chuyển thành mảng
       price: Number(formData.price),
       stock: Number(formData.stock)
     };
@@ -80,7 +82,7 @@ const ProductManager = () => {
 
         {/* Menu admin */}
         <div className="flex justify-center space-x-6 mb-10">
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
+          <button onClick={() => navigate('/admin/account')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
             <FaUsers /> User Management
           </button>
           <button onClick={() => navigate('/admin/orders')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
@@ -95,7 +97,14 @@ const ProductManager = () => {
             <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="brand" value={formData.brand} onChange={handleChange} placeholder="Brand (Nike, Adidas, Vans)" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="size" value={formData.size} onChange={handleChange} placeholder="Sizes (e.g. 38, 39, 40)" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
-            <input name="color" value={formData.color} onChange={handleChange} placeholder="Color" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
+            <input
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+              placeholder="Colors (e.g. Red, Blue, Black)"
+              required
+              className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary"
+            />
             <input name="price" value={formData.price} onChange={handleChange} placeholder="Price" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="stock" value={formData.stock} onChange={handleChange} placeholder="Stock" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="image" value={formData.image} onChange={handleChange} placeholder="Image URL" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2" />

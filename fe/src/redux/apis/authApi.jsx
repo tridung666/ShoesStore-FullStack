@@ -45,14 +45,10 @@ export const authApi = createApi({
       providesTags: ['Users'],
     }),
 
-    // ✅ Thêm người dùng mới
-    createUser: builder.mutation({
-      query: (body) => ({
-        url: '/api/auth/users',
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: ['Users'],
+    // ✅ Lấy 1 người dùng theo id
+    getUserById: builder.query({
+      query: (id) => `/api/auth/users/${id}`,
+      providesTags: ['Users'],
     }),
 
     // ✅ Cập nhật người dùng
@@ -80,8 +76,8 @@ export const {
   useLoginUserMutation,
   useRegisterUserMutation,
   useGetAllUsersQuery,
-  useCreateUserMutation,
+  useGetUserByIdQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
-  useChangePasswordMutation,  // Import hook mới cho thay đổi mật khẩu
+  useChangePasswordMutation,
 } = authApi;

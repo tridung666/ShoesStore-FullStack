@@ -1,8 +1,8 @@
-import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from "../redux/apis/orderApi.jsx";
+import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from "../../redux/apis/orderApi.jsx";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import PageWrapper from "../components/PageWrapper";
+import PageWrapper from "../../components/PageWrapper.jsx";
 import { FaUsers, FaBoxOpen } from "react-icons/fa";
 
 const AllOrders = () => {
@@ -35,7 +35,7 @@ const AllOrders = () => {
 
         {/* Menu admin */}
         <div className="flex justify-center space-x-6 mb-10">
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
+          <button onClick={() => navigate('/admin/account')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">
             <FaUsers /> User Management
           </button>
           <button onClick={() => navigate('/admin/products')} className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition">

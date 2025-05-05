@@ -12,9 +12,9 @@ import Cart from './pages/Cart';
 import OrderForm from './pages/OrderForm';
 import MyOrders from './pages/MyOrders';
 
-import AdminDashboard from './pages/AdminDashboard';
-import ProductManager from './pages/ProductManager';
-import AllOrders from './pages/AllOrders';
+import AdminDashboard from './pages/admin/AdminAccount';
+import ProductManager from './pages/admin/AdminProducts';
+import AllOrders from './pages/admin/AdminOrders';
 import ChangePassword from './pages/ChangePassword'; // Import trang mới
 
 import ErrorPage from './pages/Error';

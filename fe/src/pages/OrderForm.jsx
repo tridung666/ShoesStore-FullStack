@@ -34,13 +34,14 @@ const OrderForm = () => {
       totalPrice: total,
       phone,
       products: cartItems.map((item) => ({
-        productId: item.productId,
+        productId: item.productId._id || item.productId,
         size: item.size,
+        color: item.color,   
         quantity: item.quantity,
-        price: item.price
-      }))
+        price: item.productId?.price || item.price,
+      })),
     };
-
+    
     try {
       await createOrder(orderData).unwrap();
       dispatch(clearCart());
