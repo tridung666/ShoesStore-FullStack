@@ -2,41 +2,38 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../redux/apis/authApi";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/slices/authSlice"; // ✅
+import { setCredentials } from "../redux/slices/authSlice";   // ✅ sửa ở đây
 import PageWrapper from "../components/PageWrapper";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [loginUser] = useLoginUserMutation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [loginUser] = useLoginUserMutation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await loginUser({ username, password }).unwrap();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await loginUser({ username, password }).unwrap();
 
-      // ✅ Cập nhật Redux đúng cách
-      dispatch(loginSuccess({
-        user: res.user,    // 👈 phải tách đúng user và token
-        token: res.token,
-      }));
+            // ✅ dùng setCredentials thay vì loginSuccess
+            dispatch(setCredentials({
+                user: res.user,
+                token: res.token,
+            }));
 
-      // ✅ Lưu token vào localStorage (user đã lưu bên slice rồi)
-      localStorage.setItem("token", res.token);
-
-      if (res.user.role === "admin") {
-        navigate("/"); // Admin về homepage (hoặc dashboard tuỳ bạn)
-      } else {
-        navigate("/"); // User thường cũng về homepage
-      }
-    } catch (err) {
-      setErrorMessage(err?.data?.message || "Login failed");
-    }
-  };
+            if (res.user.role === "admin") {
+                navigate("/");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            setErrorMessage(err?.data?.message || "Login failed");
+        }
+    };
 
   return (
     <PageWrapper>

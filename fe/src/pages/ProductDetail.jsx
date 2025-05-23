@@ -5,17 +5,35 @@ import { useGetProductByIdQuery } from "../redux/apis/productApi";
 import { handleAddToCart } from "../redux/actions/cartActions";
 import { useUpdateCartMutation } from "../redux/apis/cartApi";
 import PageWrapper from "../components/PageWrapper";
+// Thêm import các hook review
+import {
+  useGetReviewsByProductQuery,
+  useCreateReviewMutation,
+} from "../redux/apis/reviewApi";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth); // ✅ Lấy user
+  const { user } = useSelector((state) => state.auth);
   const { data: product, error, isLoading } = useGetProductByIdQuery(id);
 
   const [updateCart] = useUpdateCartMutation();
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
+
+  // State cho review
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+
+  // Lấy reviews của sản phẩm
+  const {
+    data: reviews = [],
+    refetch: refetchReviews,
+    isLoading: isLoadingReviews,
+  } = useGetReviewsByProductQuery(id);
+
+  const [createReview, { isLoading: isCreatingReview }] = useCreateReviewMutation();
 
   const sizes = product?.size || [];
   const colors = product?.color || [];
@@ -35,12 +53,30 @@ const ProductDetail = () => {
           quantity,
         },
         updateCart,
-        user?._id // ✅ Truyền userId từ Redux
+        user?._id
       );
       alert("✅ Thêm vào giỏ hàng thành công!");
     } catch (err) {
       console.error(err);
       alert("❌ Lỗi khi thêm vào giỏ hàng.");
+    }
+  };
+
+  // Xử lý gửi review
+  const handleSubmitReview = async () => {
+    if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
+    if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
+    try {
+      await createReview({
+        product: product?._id,
+        rating: reviewRating,
+        comment: reviewText,
+      }).unwrap();
+      setReviewText("");
+      setReviewRating(5);
+      refetchReviews();
+    } catch (err) {
+      alert("Gửi đánh giá thất bại!");
     }
   };
 
@@ -115,6 +151,65 @@ const ProductDetail = () => {
             Add to Cart
           </button>
         </div>
+      </div>
+
+      {/* --- Review Section --- */}
+      <div className="max-w-2xl mx-auto mt-10">
+        <h2 className="text-2xl font-bold mb-4">Đánh giá sản phẩm</h2>
+        {isLoadingReviews ? (
+          <div>Đang tải đánh giá...</div>
+        ) : (
+          <div>
+            {reviews.length === 0 && <div>Chưa có đánh giá nào.</div>}
+            {reviews.map((rv) => (
+              <div key={rv._id} className="border-b py-3">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">{rv.user?.name || "Người dùng"}</span>
+                  <span className="text-yellow-500">
+                    {"★".repeat(rv.rating)}{"☆".repeat(5 - rv.rating)}
+                  </span>
+                </div>
+                <div>{rv.comment}</div>
+                <div className="text-xs text-gray-400">{new Date(rv.createdAt).toLocaleString()}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {user && (
+          <div className="mt-6">
+            <h3 className="font-semibold mb-2">Viết đánh giá của bạn</h3>
+            <div className="flex items-center gap-2 mb-2">
+              <span>Đánh giá:</span>
+              <select
+                value={reviewRating}
+                onChange={e => setReviewRating(Number(e.target.value))}
+                className="border rounded px-2 py-1"
+              >
+                {[5, 4, 3, 2, 1].map(star => (
+                  <option key={star} value={star}>{star} sao</option>
+                ))}
+              </select>
+            </div>
+            <textarea
+              value={reviewText}
+              onChange={e => setReviewText(e.target.value)}
+              className="w-full border rounded p-2 mb-2"
+              rows={3}
+              placeholder="Nhập đánh giá của bạn..."
+            />
+            <button
+              className="bg-primary text-white px-4 py-2 rounded"
+              onClick={handleSubmitReview}
+              disabled={isCreatingReview}
+            >
+              {isCreatingReview ? "Đang gửi..." : "Gửi đánh giá"}
+            </button>
+          </div>
+        )}
+        {!user && (
+          <div className="mt-4 text-gray-500">Bạn cần đăng nhập để gửi đánh giá.</div>
+        )}
       </div>
     </PageWrapper>
   );
