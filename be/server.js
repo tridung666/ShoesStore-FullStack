@@ -27,8 +27,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api/chatbot", chatbotRoutes); // ✅ THÊM DÒNG NÀY
-app.use("/api/reviews", reviewRoutes); // ✅ Thêm dòng này
+app.use("/api/chatbot", chatbotRoutes); 
+app.use("/api/reviews", reviewRoutes); 
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -12,7 +12,7 @@ const ProductCard = ({ _id, name, color, price, image }) => {
   return (
     <div
       onClick={onCardClick}
-      className="group bg-white p-4 border border-gray-100 rounded-2xl shadow-md cursor-pointer hover:shadow-xl hover:border-green-400 transition-all duration-300 flex flex-col items-center"
+      className="group bg-white p-4 border border-gray-100 rounded-2xl shadow-md cursor-pointer hover:shadow-xl hover:border-primary transition-all duration-300 flex flex-col items-center"
     >
       <div className="w-full h-48 mb-4 rounded-xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <img
