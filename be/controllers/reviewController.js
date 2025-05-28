@@ -16,16 +16,18 @@ exports.createReview = async (req, res) => {
     }
 
     if (!product || !rating || !comment) {
-      return res.status(400).json({ error: "Missing fields in request body" });
+      return res.status(409).json({ error: "Missing fields in request body" });
     }
 
     // ✅ ép product về ObjectId
-    const review = new Review({
-      product: mongoose.Types.ObjectId(product),
-      user,
-      rating,
-      comment
-    });
+  const review = new Review({
+  product: new mongoose.Types.ObjectId(product),  // thêm new vào đây
+  user: req.user._id.toString(),
+  rating,
+  comment,
+});
+
+
 
     await review.save();
 

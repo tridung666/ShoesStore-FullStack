@@ -63,7 +63,7 @@ const AdminDashboard = () => {
     <PageWrapper>
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-0">
         <div className="max-w-5xl mx-auto py-10">
-          <h1 className="text-4xl font-extrabold text-center text-green-700 mb-2 drop-shadow">Admin Dashboard</h1>
+          <h1 className="text-4xl font-extrabold text-center text-green-700 mb-2 drop-shadow">Accounts Manage</h1>
 
           {/* Menu */}
           <div className="flex justify-center space-x-6 mb-10">

@@ -64,21 +64,23 @@ const ProductDetail = () => {
 
   // Xử lý gửi review
   const handleSubmitReview = async () => {
-    if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
-    if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
-    try {
-      await createReview({
-        product: product?._id,
-        rating: reviewRating,
-        comment: reviewText,
-      }).unwrap();
-      setReviewText("");
-      setReviewRating(5);
-      refetchReviews();
-    } catch (err) {
-      alert("Gửi đánh giá thất bại!");
-    }
-  };
+  if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
+  if (!product || !product._id) return alert("Sản phẩm chưa được chọn hoặc load chưa xong!");
+  if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
+
+  // gọi API
+  try {
+    await createReview({
+      product: product._id,
+      rating: reviewRating,
+      comment: reviewText,
+    }).unwrap();
+    // reset form, refetch...
+  } catch (err) {
+    alert("Gửi đánh giá thất bại!");
+  }
+};
+
 
   if (isLoading) return <div className="p-10">Loading...</div>;
   if (error) return <div className="p-10 text-red-600">Error fetching product</div>;

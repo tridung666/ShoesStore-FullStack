@@ -8,6 +8,7 @@ import {
   useDeleteCartMutation,
   useDeleteCartItemMutation,
 } from "../redux/apis/cartApi";
+import { FaShoppingCart } from "react-icons/fa";
 import { updateQuantity, setCartItems, clearCart } from "../redux/slices/cartSlice";
 import PageWrapper from "../components/PageWrapper";
 import { store } from "../redux/store";
@@ -93,8 +94,9 @@ const Cart = () => {
   return (
     <PageWrapper>
       <div className="p-6 md:p-10">
-        <h1 className="text-4xl font-semibold mb-6">
-          Cart <span className="text-lg font-normal">({cartItems.length} items)</span>
+        <h1 className="text-4xl font-semibold mb-6 flex items-center gap-3">
+          <FaShoppingCart className="text-4xl text-primary" />
+          <span className="text-xl font-medium">{cartItems.length} items</span>
         </h1>
 
         {cartItems.length === 0 ? (
@@ -174,7 +176,7 @@ const Cart = () => {
                 onClick={() => navigate("/order")}
                 className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-green-800 transition"
               >
-                Continue to payment →
+                Proceed To Checkout →
               </button>
 
               <button
