@@ -80,3 +80,18 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: 'Cập nhật trạng thái thất bại', error: err.message });
   }
 };
+
+// ✅ Admin xóa đơn hàng
+exports.deleteOrderById = async (req, res) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng để xoá" });
+    }
+
+    res.status(200).json({ message: "Đã xoá đơn hàng thành công!" });
+  } catch (err) {
+    res.status(500).json({ message: "Xoá đơn hàng thất bại", error: err.message });
+  }
+};

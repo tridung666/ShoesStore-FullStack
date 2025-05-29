@@ -28,6 +28,15 @@ export const orderApi = createApi({
       providesTags: ['Order'],
     }),
 
+    deleteOrder: builder.mutation({
+      query: (orderId) => ({
+        url: `/api/orders/${orderId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Order'],
+    }),
+
+
     // ✅ Lấy tất cả đơn hàng (admin)
     getAllOrders: builder.query({
       query: () => '/api/orders',
@@ -51,4 +60,5 @@ export const {
   useGetMyOrdersQuery,
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
+  useDeleteOrderMutation,
 } = orderApi;

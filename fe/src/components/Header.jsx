@@ -114,7 +114,7 @@ const Header = () => {
 
           {/* Dropdown menu */}
           {userName && isMenuOpen && (
-            <div className="absolute right-0 top-14 w-56 bg-white text-black border border-green-300 rounded-xl shadow-2xl text-left p-3 text-base z-50 space-y-1 animate-fade-in">
+            <div className="absolute right-0 top-14 w-56 bg-white text-black border border-black rounded-xl shadow-2xl text-left p-3 text-base z-50 space-y-1 animate-fade-in">
               {userRole === 'admin' && (
                 <>
                   <Link
