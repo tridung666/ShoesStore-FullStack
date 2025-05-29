@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { FiMapPin, FiPhone, FiShoppingCart } from "react-icons/fi";
 import { FaBoxOpen } from "react-icons/fa";
 import PageWrapper from "../components/PageWrapper";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const OrderForm = () => {
   const [address, setAddress] = useState("");
@@ -21,12 +23,12 @@ const OrderForm = () => {
     e.preventDefault();
 
     if (!address.trim()) {
-      alert("Vui lòng nhập địa chỉ giao hàng!");
+      toast.error("Vui lòng nhập địa chỉ giao hàng!");
       return;
     }
 
     if (!phone.trim()) {
-      alert("Vui lòng nhập số điện thoại!");
+      toast.error("Vui lòng nhập số điện thoại!");
       return;
     }
 
@@ -47,9 +49,10 @@ const OrderForm = () => {
     try {
       await createOrder(orderData).unwrap();
       dispatch(clearCart());
+      toast.success("Đặt hàng thành công!");
       navigate("/");
     } catch (err) {
-      alert("Lỗi khi đặt hàng: " + (err.data?.message || err.error));
+      toast.error("Lỗi khi đặt hàng: " + (err.data?.message || err.error));
     }
   };
 
