@@ -51,6 +51,16 @@ export const authApi = createApi({
       providesTags: ['Users'],
     }),
 
+    createUserByAdmin: builder.mutation({
+      query: (body) => ({
+        url: '/api/auth/users',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Users'],
+    }),
+
+
     // ✅ Cập nhật người dùng
     updateUser: builder.mutation({
       query: ({ id, ...body }) => ({
@@ -80,4 +90,5 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
   useChangePasswordMutation,
+  useCreateUserByAdminMutation
 } = authApi;

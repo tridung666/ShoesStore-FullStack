@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   useGetAllUsersQuery,
   useDeleteUserMutation,
-  useUpdateUserMutation
-} from '../../redux/apis/authApi.jsx'; // ❌ Xoá useCreateUserMutation
+  useUpdateUserMutation,
+  useCreateUserByAdminMutation, // ✅ import thêm
+} from '../../redux/apis/authApi.jsx';
 import PageWrapper from "../../components/PageWrapper.jsx";
 import { FaEdit, FaTrashAlt, FaBoxOpen, FaClipboardList } from "react-icons/fa";
 
@@ -15,6 +16,7 @@ const AdminDashboard = () => {
   const { data: users = [], isLoading, error } = useGetAllUsersQuery();
   const [deleteUser] = useDeleteUserMutation();
   const [updateUser] = useUpdateUserMutation();
+  const [createUserByAdmin, { isLoading: isCreating }] = useCreateUserByAdminMutation();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -47,12 +49,13 @@ const AdminDashboard = () => {
         await updateUser({ id: editingUserId, ...formData }).unwrap();
         alert("✅ Cập nhật người dùng thành công!");
       } else {
-        alert("❗ Hiện tại chưa hỗ trợ thêm user mới!");
+        await createUserByAdmin(formData).unwrap();
+        alert("✅ Tạo người dùng mới thành công!");
       }
       setFormData({ name: '', username: '', password: '', role: 'user' });
       setEditingUserId(null);
     } catch (err) {
-      alert("❌ Lưu thất bại!");
+      alert("❌ Lưu thất bại! " + (err.data?.message || err.error));
     }
   };
 
@@ -77,7 +80,7 @@ const AdminDashboard = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8 mb-12 max-w-xl mx-auto space-y-4 border border-green-100">
-            <h2 className="text-2xl font-bold text-green-600 mb-2">{editingUserId ? 'Edit User' : 'Add User (Chưa hỗ trợ)'}</h2>
+            <h2 className="text-2xl font-bold text-green-600 mb-2">{editingUserId ? 'Edit User' : 'Add User'}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
               <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
@@ -88,8 +91,12 @@ const AdminDashboard = () => {
               </select>
             </div>
             <div className="flex justify-end">
-              <button type="submit" className="bg-primary hover:bg-green-900 text-white font-semibold px-6 py-2 rounded-lg transition">
-                {editingUserId ? 'Update User' : 'Add User'}
+              <button
+                type="submit"
+                disabled={isCreating}
+                className="bg-primary hover:bg-green-900 text-white font-semibold px-6 py-2 rounded-lg transition"
+              >
+                {editingUserId ? 'Update User' : isCreating ? 'Đang tạo...' : 'Add User'}
               </button>
             </div>
           </form>

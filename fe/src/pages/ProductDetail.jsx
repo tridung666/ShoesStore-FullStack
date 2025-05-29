@@ -5,11 +5,30 @@ import { useGetProductByIdQuery } from "../redux/apis/productApi";
 import { handleAddToCart } from "../redux/actions/cartActions";
 import { useUpdateCartMutation } from "../redux/apis/cartApi";
 import PageWrapper from "../components/PageWrapper";
-// Thêm import các hook review
 import {
   useGetReviewsByProductQuery,
   useCreateReviewMutation,
 } from "../redux/apis/reviewApi";
+
+const StarRating = ({ rating, setRating }) => {
+  return (
+    <div className="flex space-x-1 cursor-pointer">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          onClick={() => setRating(star)}
+          className={`text-2xl select-none ${
+            star <= rating ? "text-yellow-400" : "text-gray-300"
+          }`}
+          role="button"
+          aria-label={`${star} sao`}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+  );
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -24,7 +43,7 @@ const ProductDetail = () => {
 
   // State cho review
   const [reviewText, setReviewText] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
+const [reviewRating, setReviewRating] = useState(0);
 
   // Lấy reviews của sản phẩm
   const {
@@ -64,23 +83,25 @@ const ProductDetail = () => {
 
   // Xử lý gửi review
   const handleSubmitReview = async () => {
-  if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
-  if (!product || !product._id) return alert("Sản phẩm chưa được chọn hoặc load chưa xong!");
-  if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
+    if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
+    if (!product || !product._id) return alert("Sản phẩm chưa được chọn hoặc load chưa xong!");
+    if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
 
-  // gọi API
-  try {
-    await createReview({
-      product: product._id,
-      rating: reviewRating,
-      comment: reviewText,
-    }).unwrap();
-    // reset form, refetch...
-  } catch (err) {
-    alert("Gửi đánh giá thất bại!");
-  }
-};
+    try {
+      await createReview({
+        product: product._id,
+        rating: reviewRating,
+        comment: reviewText,
+      }).unwrap();
 
+      setReviewText("");
+      setReviewRating(5);
+      refetchReviews();
+      alert("Gửi đánh giá thành công!");
+    } catch (err) {
+      alert("Gửi đánh giá thất bại!");
+    }
+  };
 
   if (isLoading) return <div className="p-10">Loading...</div>;
   if (error) return <div className="p-10 text-red-600">Error fetching product</div>;
@@ -141,7 +162,18 @@ const ProductDetail = () => {
               type="number"
               min="1"
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "") {
+                  setQuantity("");
+                } else {
+                  const num = Number(val);
+                  if (!isNaN(num) && num > 0) setQuantity(num);
+                }
+              }}
+              onBlur={() => {
+                if (quantity === "" || quantity < 1) setQuantity(1);
+              }}
               className="w-full border border-gray-300 p-2 rounded-full text-center"
             />
           </div>
@@ -183,19 +215,11 @@ const ProductDetail = () => {
             <h3 className="font-semibold mb-2">Viết đánh giá của bạn</h3>
             <div className="flex items-center gap-2 mb-2">
               <span>Đánh giá:</span>
-              <select
-                value={reviewRating}
-                onChange={e => setReviewRating(Number(e.target.value))}
-                className="border rounded px-2 py-1"
-              >
-                {[5, 4, 3, 2, 1].map(star => (
-                  <option key={star} value={star}>{star} sao</option>
-                ))}
-              </select>
+              <StarRating rating={reviewRating} setRating={setReviewRating} />
             </div>
             <textarea
               value={reviewText}
-              onChange={e => setReviewText(e.target.value)}
+              onChange={(e) => setReviewText(e.target.value)}
               className="w-full border rounded p-2 mb-2"
               rows={3}
               placeholder="Nhập đánh giá của bạn..."
@@ -209,9 +233,7 @@ const ProductDetail = () => {
             </button>
           </div>
         )}
-        {!user && (
-          <div className="mt-4 text-gray-500">Bạn cần đăng nhập để gửi đánh giá.</div>
-        )}
+        {!user && <div className="mt-4 text-gray-500">Bạn cần đăng nhập để gửi đánh giá.</div>}
       </div>
     </PageWrapper>
   );

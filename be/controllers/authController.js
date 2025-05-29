@@ -126,6 +126,39 @@ const updateUser = async (req, res) => {
     }
 };
 
+const createUserByAdmin = async (req, res) => {
+  try {
+    const { name, username, password, role = "user" } = req.body;
+
+    if (!name || !username || !password) {
+      return res.status(400).json({ success: false, message: "Vui lòng nhập đầy đủ thông tin!" });
+    }
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "Username đã tồn tại!" });
+    }
+
+    const newUser = new User({ name, username, password, role });
+    await newUser.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Admin tạo user thành công!",
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        username: newUser.username,
+        role: newUser.role,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Lỗi server", error: err.message });
+  }
+};
+
+
 // ✅ Xoá user
 const deleteUserById = async (req, res) => {
     try {
@@ -166,5 +199,6 @@ module.exports = {
     getUserById,
     updateUser,         // ✅ Thêm export updateUser
     deleteUserById,
-    changePassword
+    changePassword,
+    createUserByAdmin   // ✅ Thêm export createUserByAdmin
 };
