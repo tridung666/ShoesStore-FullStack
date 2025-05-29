@@ -1,16 +1,29 @@
-const Product = require('../models/Product');  // Import model Product
+const Product = require('../models/Product');
 
-// Thêm sản phẩm mới
+// Tạo sản phẩm mới (image là URL upload trên Cloudinary)
 exports.createProduct = async (req, res) => {
   try {
-    const { name, brand, size, color, price, description, image, stock } = req.body;
+    let { name, brand, size, color, price, description, image, stock } = req.body;
 
-    // Kiểm tra nếu các trường bắt buộc không được cung cấp
     if (!name || !brand || !size || !color || !price || !description || !image) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Tạo một sản phẩm mới
+    // Nếu size, color là chuỗi dấu phẩy thì chuyển thành mảng
+    if (typeof size === 'string') {
+      size = size.split(',').map(s => s.trim());
+    }
+    if (typeof color === 'string') {
+      color = color.split(',').map(c => c.trim());
+    }
+
+    price = Number(price);
+    stock = Number(stock);
+
+    if (isNaN(price) || isNaN(stock)) {
+      return res.status(400).json({ message: "Price and stock must be valid numbers" });
+    }
+
     const newProduct = new Product({
       name,
       brand,
@@ -22,7 +35,6 @@ exports.createProduct = async (req, res) => {
       stock,
     });
 
-    // Lưu sản phẩm vào cơ sở dữ liệu
     await newProduct.save();
 
     res.status(201).json({
@@ -30,6 +42,7 @@ exports.createProduct = async (req, res) => {
       product: newProduct,
     });
   } catch (err) {
+    console.error('Error creating product:', err);
     res.status(500).json({
       message: 'Error creating product',
       error: err.message,
@@ -37,13 +50,14 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// Lấy tất cả sản phẩm
+// Các hàm khác tương tự, bổ sung log lỗi chi tiết
+
 exports.getAllProducts = async (req, res) => {
   try {
-    // Lấy tất cả sản phẩm
     const products = await Product.find();
     res.status(200).json(products);
   } catch (err) {
+    console.error('Error fetching products:', err);
     res.status(500).json({
       message: 'Error fetching products',
       error: err.message,
@@ -51,19 +65,18 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// Lấy sản phẩm theo ID
 exports.getProductById = async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await Product.findById(productId);
 
-    // Kiểm tra xem sản phẩm có tồn tại hay không
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
     res.status(200).json(product);
   } catch (err) {
+    console.error('Error fetching product:', err);
     res.status(500).json({
       message: 'Error fetching product',
       error: err.message,
@@ -71,19 +84,56 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// Xoá sản phẩm theo ID
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    let { name, brand, size, color, price, description, image, stock } = req.body;
+
+    if (typeof size === 'string') {
+      size = size.split(',').map(s => s.trim());
+    }
+    if (typeof color === 'string') {
+      color = color.split(',').map(c => c.trim());
+    }
+
+    price = Number(price);
+    stock = Number(stock);
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { name, brand, size, color, price, description, image, stock },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json({
+      message: 'Product updated successfully!',
+      product: updatedProduct,
+    });
+  } catch (err) {
+    console.error('Error updating product:', err);
+    res.status(500).json({
+      message: 'Error updating product',
+      error: err.message,
+    });
+  }
+};
+
 exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await Product.findByIdAndDelete(productId);
 
-    // Kiểm tra xem sản phẩm có tồn tại hay không trước khi xoá
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (err) {
+    console.error('Error deleting product:', err);
     res.status(500).json({
       message: 'Error deleting product',
       error: err.message,
@@ -91,17 +141,16 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// Lấy tất cả sản phẩm theo brand
 exports.getProductsByBrand = async (req, res) => {
-    try {
-      const { brand } = req.params;  // Lấy brand từ URL
-      const products = await Product.find({ brand: brand }); // Lọc theo brand
-      res.status(200).json(products);  // Trả về danh sách sản phẩm
-    } catch (err) {
-      res.status(500).json({
-        message: 'Error fetching products by brand',
-        error: err.message,
-      });
-    }
-  };
-  
+  try {
+    const { brand } = req.params;
+    const products = await Product.find({ brand });
+    res.status(200).json(products);
+  } catch (err) {
+    console.error('Error fetching products by brand:', err);
+    res.status(500).json({
+      message: 'Error fetching products by brand',
+      error: err.message,
+    });
+  }
+};

@@ -7,7 +7,7 @@ import {
 } from '../../redux/apis/productApi.jsx';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrashAlt, FaUsers, FaClipboardList } from "react-icons/fa";
-import { toast } from 'react-toastify'; // <-- import toast
+import { toast } from 'react-toastify';
 
 const ProductManager = () => {
   const { data: products = [], isLoading, error } = useGetAllProductsQuery();
@@ -18,6 +18,9 @@ const ProductManager = () => {
 
   const navigate = useNavigate();
 
+  // Lưu file ảnh upload (File object)
+  const [imageFile, setImageFile] = useState(null);
+
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -25,7 +28,6 @@ const ProductManager = () => {
     color: '',
     price: '',
     description: '',
-    image: '',
     stock: ''
   });
 
@@ -33,13 +35,22 @@ const ProductManager = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // Xử lý chọn file ảnh
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
   const handleEdit = (product) => {
     setEditingId(product._id);
     setFormData({
       ...product,
       size: product.size.join(', '),
-      color: Array.isArray(product.color) ? product.color.join(', ') : product.color // chuyển thành chuỗi
+      color: Array.isArray(product.color) ? product.color.join(', ') : product.color,
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      description: product.description || ''
     });
+    setImageFile(null); // reset file khi edit
   };
 
   const handleDelete = async (id) => {
@@ -52,29 +63,38 @@ const ProductManager = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = {
-      ...formData,
-      size: formData.size.split(',').map(s => Number(s.trim())),
-      color: formData.color.split(',').map(c => c.trim()), // chuyển thành mảng
-      price: Number(formData.price),
-      stock: Number(formData.stock)
-    };
+  e.preventDefault();
 
-    try {
-      if (editingId) {
-        await updateProduct({ id: editingId, ...payload }).unwrap();
-        toast.success("Cập nhật sản phẩm thành công!");
-      } else {
-        await createProduct(payload).unwrap();
-        toast.success("Tạo sản phẩm mới thành công!");
-      }
-      setFormData({ name: '', brand: '', size: '', color: '', price: '', description: '', image: '', stock: '' });
-      setEditingId(null);
-    } catch {
-      toast.error("Lỗi khi lưu sản phẩm");
+  const payload = new FormData();
+  payload.append('name', formData.name);
+  payload.append('brand', formData.brand);
+  payload.append('size', formData.size.split(',').map(s => s.trim()).join(',')); // backend parse
+  payload.append('color', formData.color.split(',').map(c => c.trim()).join(','));
+  payload.append('price', Number(formData.price));
+  payload.append('stock', Number(formData.stock));
+  payload.append('description', formData.description);
+
+  if (imageFile) {
+    payload.append('image', imageFile);
+  }
+
+  try {
+    if (editingId) {
+      // Truyền 1 object {id, formData} đúng như api slice đã chỉnh
+      await updateProduct({ id: editingId, formData: payload }).unwrap();
+      toast.success("Cập nhật sản phẩm thành công!");
+    } else {
+      await createProduct(payload).unwrap();
+      toast.success("Tạo sản phẩm mới thành công!");
     }
-  };
+    setFormData({ name: '', brand: '', size: '', color: '', price: '', description: '', stock: '' });
+    setImageFile(null);
+    setEditingId(null);
+  } catch {
+    toast.error("Lỗi khi lưu sản phẩm");
+  }
+};
+
 
   if (isLoading) return <div className="p-10">Đang tải sản phẩm...</div>;
   if (error) return <div className="p-10 text-red-600">Lỗi tải sản phẩm</div>;
@@ -95,23 +115,16 @@ const ProductManager = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8 mb-12 max-w-2xl mx-auto space-y-4 border border-green-100">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8 mb-12 max-w-2xl mx-auto space-y-4 border border-green-100" encType="multipart/form-data">
           <h2 className="text-2xl font-bold text-green-600 mb-2">{editingId ? 'Edit Product' : 'Add New Product'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="brand" value={formData.brand} onChange={handleChange} placeholder="Brand (Nike, Adidas, Vans)" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="size" value={formData.size} onChange={handleChange} placeholder="Sizes (e.g. 38, 39, 40)" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
-            <input
-              name="color"
-              value={formData.color}
-              onChange={handleChange}
-              placeholder="Colors (e.g. Red, Blue, Black)"
-              required
-              className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary"
-            />
+            <input name="color" value={formData.color} onChange={handleChange} placeholder="Colors (e.g. Red, Blue, Black)" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="price" value={formData.price} onChange={handleChange} placeholder="Price" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
             <input name="stock" value={formData.stock} onChange={handleChange} placeholder="Stock" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary" />
-            <input name="image" value={formData.image} onChange={handleChange} placeholder="Image URL" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2" />
+            <input type="file" onChange={handleImageChange} accept="image/*" className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2" />
             <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" required className="border border-green-200 p-3 rounded-lg focus:ring-2 focus:ring-primary md:col-span-2" />
           </div>
           <div className="flex justify-end">
