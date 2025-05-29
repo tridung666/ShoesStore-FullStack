@@ -19,7 +19,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
-  // Cập nhật selector lấy tổng số lượng trong cartItems
   const cartItemsCount = useSelector((state) =>
     state.cart.cartItems.reduce((total, item) => total + item.quantity, 0)
   );
@@ -46,7 +45,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full bg-gray-100 text-black h-[100px] flex items-center px-10 border-b border-gray-200 shadow-md relative z-50">
+    <header className="w-full bg-secondary text-primary h-[100px] flex items-center px-10 border-b border-primary/30 shadow-md relative z-50">
       {/* Logo */}
       <div className="flex items-center">
         <Link to="/" aria-label="Homepage">
@@ -60,7 +59,7 @@ const Header = () => {
           <Link
             key={brand}
             to={`/${brand}`}
-            className="text-black text-xl px-4 py-2 rounded-xl hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+            className="text-primary text-xl px-4 py-2 rounded-xl hover:bg-primary hover:text-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {brand}
           </Link>
@@ -75,9 +74,9 @@ const Header = () => {
             type="text"
             placeholder="Search"
             aria-label="Search products"
-            className="p-3 text-black border border-gray-300 rounded-3xl pl-10 w-full focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+            className="p-3 text-primary border border-primary/30 rounded-3xl pl-10 w-full focus:outline-none focus:ring-2 focus:ring-primary bg-white"
           />
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" />
         </div>
 
         {/* User Info & Dropdown */}
@@ -89,15 +88,15 @@ const Header = () => {
                 aria-expanded={isMenuOpen}
                 aria-label="User menu"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="flex items-center space-x-2 p-2 text-black rounded-xl hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex items-center space-x-2 p-2 text-primary rounded-xl hover:bg-primary hover:text-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <FaUserCircle className="text-2xl" />
                 <span>{userName}</span>
               </button>
               <Link
                 to="/my-orders"
-                title="Đơn hàng của tôi"
-                className="p-2 rounded-full hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                title="My Orders"
+                className="p-2 rounded-full hover:bg-primary hover:text-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <FaClipboardCheck className="text-xl" />
               </Link>
@@ -105,7 +104,7 @@ const Header = () => {
           ) : (
             <Link
               to="/login"
-              className="flex items-center space-x-2 p-2 text-black rounded-xl hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+              className="flex items-center space-x-2 p-2 text-primary rounded-xl hover:bg-primary hover:text-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <FaUserCircle className="text-2xl" />
               <span>Account</span>
@@ -114,45 +113,45 @@ const Header = () => {
 
           {/* Dropdown menu */}
           {userName && isMenuOpen && (
-            <div className="absolute right-0 top-14 w-56 bg-white text-black border border-black rounded-xl shadow-2xl text-left p-3 text-base z-50 space-y-1 animate-fade-in">
+            <div className="absolute right-0 top-14 w-56 bg-white text-primary border border-primary/50 rounded-xl shadow-2xl text-left p-3 text-base z-50 space-y-1 animate-fade-in">
               {userRole === 'admin' && (
                 <>
                   <Link
-                    to="/admin/account"
+                    to="/admin/accounts"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2 hover:bg-primary hover:text-white p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex items-center gap-2 hover:bg-primary hover:text-secondary p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    <FaUserCog className="text-green-600" /> Quản lý tài khoản
+                    <FaUserCog className="text-primary" /> Account Management
                   </Link>
                   <Link
                     to="/admin/products"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2 hover:bg-primary hover:text-white p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex items-center gap-2 hover:bg-primary hover:text-secondary p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    <FaBoxOpen className="text-green-600" /> Quản lý sản phẩm
+                    <FaBoxOpen className="text-primary" /> Product Management
                   </Link>
                   <Link
                     to="/admin/orders"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2 hover:bg-primary hover:text-white p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="flex items-center gap-2 hover:bg-primary hover:text-secondary p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
                   >
-                    <FaClipboardList className="text-green-600" /> Quản lý đơn hàng
+                    <FaClipboardList className="text-primary" /> Order Management
                   </Link>
-                  <hr className="border-t border-gray-200 my-1" />
+                  <hr className="border-t border-primary/20 my-1" />
                 </>
               )}
               <Link
                 to="/change-password"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 hover:bg-primary hover:text-white p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex items-center gap-2 hover:bg-primary hover:text-secondary p-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary"
               >
-                <FaKey className="text-green-600" /> Đổi mật khẩu
+                <FaKey className="text-primary" /> Change Password
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 w-full text-left hover:bg-red-500 hover:text-white p-2 rounded-lg transition text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                className="flex items-center gap-2 w-full text-left hover:bg-red-600 hover:text-secondary p-2 rounded-lg transition text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
               >
-                <FaSignOutAlt /> Đăng xuất
+                <FaSignOutAlt /> Logout
               </button>
             </div>
           )}
@@ -162,7 +161,7 @@ const Header = () => {
         <Link
           to="/cart"
           aria-label="View cart"
-          className="relative flex items-center space-x-2 p-2 text-black rounded-xl hover:bg-primary hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+          className="relative flex items-center space-x-2 p-2 text-primary rounded-xl hover:bg-primary hover:text-secondary transition-all focus:outline-none focus:ring-2 focus:ring-primary"
         >
           <FaShoppingCart className="text-2xl" />
           {cartItemsCount > 0 && (

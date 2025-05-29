@@ -154,3 +154,4 @@ exports.getProductsByBrand = async (req, res) => {
     });
   }
 };
+

@@ -2,9 +2,10 @@ import { useGetAllOrdersQuery, useUpdateOrderStatusMutation, useDeleteOrderMutat
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import PageWrapper from "../../components/PageWrapper.jsx";
+import Sidebar from "../../components/Sidebar.jsx";
 import { FaUsers, FaBoxOpen, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
+import PageWrapper from "../../components/PageWrapper.jsx";
 
 const AllOrders = () => {
   const user = useSelector((state) => state.auth.user);
@@ -21,7 +22,7 @@ const AllOrders = () => {
   }, [user, navigate]);
 
   const handleChangeStatus = async (orderId, newStatus) => {
-    if (processingIds.has(orderId)) return; // tránh spam
+    if (processingIds.has(orderId)) return;
     setProcessingIds(prev => new Set(prev).add(orderId));
 
     try {
@@ -40,7 +41,7 @@ const AllOrders = () => {
 
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm("Bạn có chắc chắn muốn xoá đơn hàng này không?")) return;
-    if (processingIds.has(orderId)) return; // tránh spam
+    if (processingIds.has(orderId)) return;
     setProcessingIds(prev => new Set(prev).add(orderId));
 
     try {
@@ -61,42 +62,32 @@ const AllOrders = () => {
   if (error) return <div className="p-10 text-red-600">Không thể tải đơn hàng.</div>;
 
   return (
-    <PageWrapper>
-      <div className="min-h-screen w-full bg-gradient-to-br from-primary via-white to-blue-50 py-10">
+<PageWrapper>
+    <div className="flex min-h-screen bg-secondary">
+      <Sidebar />
+
+      <main className="flex-1 p-10 overflow-auto">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-extrabold text-center text-green-700 mb-8 drop-shadow">
+          <h1 className="text-4xl font-extrabold text-primary mb-8 drop-shadow select-none">
             Order Management
           </h1>
 
-          {/* Menu admin */}
-          <div className="flex justify-center space-x-6 mb-10">
-            <button
-              onClick={() => navigate('/admin/account')}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition"
-            >
-              <FaUsers /> User Management
-            </button>
-            <button
-              onClick={() => navigate('/admin/products')}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg font-semibold text-green-700 bg-green-100 hover:bg-primary hover:text-white transition"
-            >
-              <FaBoxOpen /> Product Management
-            </button>
-          </div>
+          {/* Menu admin (đã có Sidebar nên có thể bỏ phần này nếu muốn) */}
+          {/* Nếu vẫn muốn giữ thì có thể biến thành phần phụ hoặc ẩn trên desktop */}
 
           {orders.length === 0 && (
-            <div className="text-center text-gray-400 text-lg py-16">No orders found.</div>
+            <div className="text-center text-gray-400 text-lg py-16 select-none">No orders found.</div>
           )}
 
           <div className="space-y-8">
             {orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white border border-green-100 rounded-2xl shadow-lg p-8"
+                className="bg-white border border-primary/30 rounded-2xl shadow-lg p-8"
               >
                 <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
                   <div>
-                    <div className="font-bold text-lg text-green-700 mb-1">
+                    <div className="font-bold text-lg text-primary mb-1">
                       Order ID: <span className="font-mono">{order._id}</span>
                     </div>
                     <div className="text-gray-700">
@@ -111,7 +102,7 @@ const AllOrders = () => {
                   </div>
                   <div className="mt-4 md:mt-0 text-right flex items-center gap-3">
                     <div>
-                      <div className="text-xl font-bold text-green-700 mb-1">
+                      <div className="text-xl font-bold text-primary mb-1">
                         Total: ${order.totalPrice}
                       </div>
                       <div className="text-gray-600">
@@ -124,7 +115,7 @@ const AllOrders = () => {
                         disabled={processingIds.has(order._id)}
                         value={order.status}
                         onChange={(e) => handleChangeStatus(order._id, e.target.value)}
-                        className="ml-2 border border-green-300 p-1 rounded focus:ring-2 focus:ring-primary"
+                        className="ml-2 border border-primary p-1 rounded focus:ring-2 focus:ring-accent"
                       >
                         <option value="pending">pending</option>
                         <option value="shipped">shipped</option>
@@ -143,12 +134,12 @@ const AllOrders = () => {
                   </div>
                 </div>
                 <div>
-                  <h2 className="font-semibold mb-2 text-green-600">Products:</h2>
+                  <h2 className="font-semibold mb-2 text-accent">Products:</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {order.products.map((p, idx) => (
                       <div
                         key={idx}
-                        className="border border-gray-200 rounded-lg bg-gray-50 p-4 flex flex-col md:flex-row md:items-center md:gap-6"
+                        className="border border-gray-200 rounded-lg bg-secondary p-4 flex flex-col md:flex-row md:items-center md:gap-6"
                       >
                         <div className="flex-1">
                           <div>
@@ -172,8 +163,9 @@ const AllOrders = () => {
             ))}
           </div>
         </div>
-      </div>
-    </PageWrapper>
+      </main>
+    </div>
+  </PageWrapper>
   );
 };
 

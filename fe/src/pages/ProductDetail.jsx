@@ -9,7 +9,7 @@ import {
   useGetReviewsByProductQuery,
   useCreateReviewMutation,
 } from "../redux/apis/reviewApi";
-import { toast } from "react-toastify";  // <-- import toast
+import { toast } from "react-toastify";
 
 const StarRating = ({ rating, setRating }) => {
   return (
@@ -22,7 +22,7 @@ const StarRating = ({ rating, setRating }) => {
             star <= rating ? "text-yellow-400" : "text-gray-300"
           }`}
           role="button"
-          aria-label={`${star} sao`}
+          aria-label={`${star} star`}
         >
           ★
         </span>
@@ -42,11 +42,11 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // State cho review
+  // State for review
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(0);
 
-  // Lấy reviews của sản phẩm
+  // Fetch product reviews
   const {
     data: reviews = [],
     refetch: refetchReviews,
@@ -59,9 +59,9 @@ const ProductDetail = () => {
   const colors = product?.color || [];
 
   const handleAddToCartClick = async () => {
-    if (!selectedSize) return toast.error("Bạn cần chọn size!");
-    if (!selectedColor) return toast.error("Bạn cần chọn màu sắc!");
-    if (!product) return toast.error("Sản phẩm chưa sẵn sàng!");
+    if (!selectedSize) return toast.error("Please select a size!");
+    if (!selectedColor) return toast.error("Please select a color!");
+    if (!product) return toast.error("Product is not ready!");
 
     try {
       await handleAddToCart(
@@ -75,18 +75,18 @@ const ProductDetail = () => {
         updateCart,
         user?._id
       );
-      toast.success("Thêm vào giỏ hàng thành công!");
+      toast.success("Added to cart successfully!");
     } catch (err) {
       console.error(err);
-      toast.error("Lỗi khi thêm vào giỏ hàng.");
+      toast.error("Error adding to cart.");
     }
   };
 
-  // Xử lý gửi review
+  // Handle review submission
   const handleSubmitReview = async () => {
-    if (!user) return toast.error("Bạn cần đăng nhập để đánh giá!");
-    if (!product || !product._id) return toast.error("Sản phẩm chưa được chọn hoặc load chưa xong!");
-    if (!reviewText.trim()) return toast.error("Vui lòng nhập nội dung đánh giá!");
+    if (!user) return toast.error("You need to log in to review!");
+    if (!product || !product._id) return toast.error("Product not selected or loading!");
+    if (!reviewText.trim()) return toast.error("Please enter your review!");
 
     try {
       await createReview({
@@ -98,9 +98,9 @@ const ProductDetail = () => {
       setReviewText("");
       setReviewRating(0);
       refetchReviews();
-      toast.success("Gửi đánh giá thành công!");
+      toast.success("Review submitted successfully!");
     } catch (err) {
-      toast.error("Gửi đánh giá thất bại!");
+      toast.error("Failed to submit review!");
     }
   };
 
@@ -109,97 +109,110 @@ const ProductDetail = () => {
 
   return (
     <PageWrapper>
-      <div className="p-10 flex flex-col md:flex-row gap-10">
-        <div className="w-full md:w-1/2">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="bg-gray-100 p-4 w-full rounded"
-          />
-        </div>
-        <div className="w-full md:w-1/2 flex flex-col gap-6">
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          <p className="text-2xl">${product.price?.toFixed(2)}</p>
+      <div className="p-10 flex flex-col md:flex-row gap-6"> {/* giảm gap từ 10 xuống 6 */}
+  {/* Left: Description */}
+  <div className="w-full md:w-1/3 flex flex-col justify-center px-4"> {/* tăng width lên 1/3 */}
+    <h2 className="text-2xl font-bold mb-4">Product Description</h2>
+    <p className="text-base text-gray-700 leading-relaxed">{product.description}</p> {/* tăng line-height */}
+  </div>
 
-          <div>
-            <h3 className="mb-2">Color</h3>
-            <div className="flex gap-2">
-              {colors.map((color) => (
-                <button
-                  key={color}
-                  className={`px-4 py-2 rounded-full capitalize ${
-                    selectedColor === color
-                      ? "bg-primary text-white"
-                      : "border border-gray-300"
-                  }`}
-                  onClick={() => setSelectedColor(color)}
-                >
-                  {color}
-                </button>
-              ))}
-            </div>
-          </div>
+  {/* Center: Image */}
+  <div className="w-full md:w-1/3 flex items-center justify-center px-4"> {/* width 1/3 */}
+    <img
+      src={product.image}
+      alt={product.name}
+      className="max-h-[400px] object-contain rounded border border-gray-300 p-2 shadow-lg"
+    />
+  </div>
 
-          <div>
-            <h3 className="mb-2">Size</h3>
-            <div className="grid grid-cols-4 gap-2">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  className={`border border-gray-300 p-2 text-center rounded-full ${
-                    selectedSize === size ? "border-primary bg-primary text-white" : ""
-                  } hover:border-primary hover:bg-primary hover:text-white transition`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
+  {/* Right: Options */}
+  <div className="w-full md:w-1/3 flex flex-col gap-4 px-4"> {/* width 1/3 */}
+    <h1 className="text-3xl font-bold">{product.name}</h1>
+    <p className="text-2xl">${product.price?.toFixed(2)}</p>
 
-          <div className="w-1/4">
-            <h3 className="mb-2">Qty</h3>
-            <input
-              type="number"
-              min="1"
-              value={quantity}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === "") {
-                  setQuantity("");
-                } else {
-                  const num = Number(val);
-                  if (!isNaN(num) && num > 0) setQuantity(num);
-                }
-              }}
-              onBlur={() => {
-                if (quantity === "" || quantity < 1) setQuantity(1);
-              }}
-              className="w-full border border-gray-300 p-2 rounded-full text-center"
-            />
-          </div>
-
+    {/* Color */}
+    <div>
+      <h3 className="mb-2">Color</h3>
+      <div className="flex gap-2 flex-wrap">
+        {colors.map((color) => (
           <button
-            className="bg-primary text-white py-3 w-full rounded-full font-semibold text-lg shadow hover:bg-green-800 transition"
-            onClick={handleAddToCartClick}
+            key={color}
+            className={`px-4 py-2 rounded-full capitalize ${
+              selectedColor === color
+                ? "bg-primary text-white"
+                : "border border-gray-300"
+            }`}
+            onClick={() => setSelectedColor(color)}
           >
-            Add to Cart
+            {color}
           </button>
-        </div>
+        ))}
       </div>
+    </div>
+
+    {/* Size */}
+    <div>
+      <h3 className="mb-2">Size</h3>
+      <div className="grid grid-cols-5 gap-2"> {/* tăng số cột size lên 5 */}
+        {sizes.map((size) => (
+          <button
+            key={size}
+            className={`border border-gray-300 p-2 text-center rounded-full ${
+              selectedSize === size ? "border-primary bg-primary text-white" : ""
+            } hover:border-primary hover:bg-primary hover:text-white transition`}
+            onClick={() => setSelectedSize(size)}
+          >
+            {size}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Quantity */}
+    <div className="w-1/3">
+      <h3 className="mb-2">Qty</h3>
+      <input
+        type="number"
+        min="1"
+        value={quantity}
+        onChange={(e) => {
+          const val = e.target.value;
+          if (val === "") {
+            setQuantity("");
+          } else {
+            const num = Number(val);
+            if (!isNaN(num) && num > 0) setQuantity(num);
+          }
+        }}
+        onBlur={() => {
+          if (quantity === "" || quantity < 1) setQuantity(1);
+        }}
+        className="w-full border border-gray-300 p-2 rounded-full text-center"
+      />
+    </div>
+
+    <button
+      className="bg-primary text-white py-3 w-full rounded-full font-semibold text-lg shadow hover:bg-green-800 transition"
+      onClick={handleAddToCartClick}
+    >
+      Add to Cart
+    </button>
+  </div>
+</div>
+
 
       {/* --- Review Section --- */}
       <div className="max-w-2xl mx-auto mt-10">
-        <h2 className="text-2xl font-bold mb-4">Đánh giá sản phẩm</h2>
+        <h2 className="text-2xl font-bold mb-4">Product Reviews</h2>
         {isLoadingReviews ? (
-          <div>Đang tải đánh giá...</div>
+          <div>Loading reviews...</div>
         ) : (
           <div>
-            {reviews.length === 0 && <div>Chưa có đánh giá nào.</div>}
+            {reviews.length === 0 && <div>No reviews yet.</div>}
             {reviews.map((rv) => (
               <div key={rv._id} className="border-b py-3">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">{rv.user?.name || "Người dùng"}</span>
+                  <span className="font-semibold">{rv.user?.name || "User"}</span>
                   <span className="text-yellow-500">
                     {"★".repeat(rv.rating)}{"☆".repeat(5 - rv.rating)}
                   </span>
@@ -213,9 +226,9 @@ const ProductDetail = () => {
 
         {user && (
           <div className="mt-6">
-            <h3 className="font-semibold mb-2">Viết đánh giá của bạn</h3>
+            <h3 className="font-semibold mb-2">Write your review</h3>
             <div className="flex items-center gap-2 mb-2">
-              <span>Đánh giá:</span>
+              <span>Rating:</span>
               <StarRating rating={reviewRating} setRating={setReviewRating} />
             </div>
             <textarea
@@ -223,18 +236,18 @@ const ProductDetail = () => {
               onChange={(e) => setReviewText(e.target.value)}
               className="w-full border rounded p-2 mb-2"
               rows={3}
-              placeholder="Nhập đánh giá của bạn..."
+              placeholder="Write your review..."
             />
             <button
               className="bg-primary text-white px-4 py-2 rounded"
               onClick={handleSubmitReview}
               disabled={isCreatingReview}
             >
-              {isCreatingReview ? "Đang gửi..." : "Gửi đánh giá"}
+              {isCreatingReview ? "Submitting..." : "Submit Review"}
             </button>
           </div>
         )}
-        {!user && <div className="mt-4 text-gray-500">Bạn cần đăng nhập để gửi đánh giá.</div>}
+        {!user && <div className="mt-4 text-gray-500">You need to log in to submit a review.</div>}
       </div>
     </PageWrapper>
   );
