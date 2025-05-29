@@ -11,7 +11,7 @@ import {
 import { FaShoppingCart } from "react-icons/fa";
 import { updateQuantity, setCartItems, clearCart } from "../redux/slices/cartSlice";
 import PageWrapper from "../components/PageWrapper";
-import { store } from "../redux/store";
+import { toast } from "react-toastify";  // <-- import toast
 
 const TAX = 2;
 
@@ -61,9 +61,11 @@ const Cart = () => {
         const res = await updateCart({ userId, items: preparedItems }).unwrap();
         if (res?.items) {
           dispatch(setCartItems(res.items));
+          toast.success("Cập nhật số lượng thành công!");
         }
       } catch (err) {
         console.error("❌ Lỗi update cart:", err);
+        toast.error("Lỗi cập nhật số lượng sản phẩm!");
       }
     }
   };
@@ -73,19 +75,24 @@ const Cart = () => {
     if (!user?._id) return;
     try {
       await deleteCartItem({ userId: user._id, productId, size, color }).unwrap();
+      toast.success("Đã xoá sản phẩm khỏi giỏ hàng!");
     } catch (error) {
       console.error('Error deleting cart item:', error);
+      toast.error("Lỗi khi xoá sản phẩm!");
     }
   };
 
   // Xoá toàn bộ cart
   const onClearCart = async () => {
     if (!user?._id) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xoá toàn bộ giỏ hàng?")) return; // confirm trước
     try {
       await deleteCart(user._id).unwrap();
       dispatch(clearCart());
+      toast.success("Giỏ hàng đã được xoá sạch!");
     } catch (error) {
       console.error('Error clearing cart:', error);
+      toast.error("Lỗi khi xoá giỏ hàng!");
     }
   };
 
@@ -124,13 +131,13 @@ const Cart = () => {
                       <div className="text-green-700 font-semibold">Size: {item.size} UK</div>
                       <div className="text-blue-600 font-semibold">Color: {item.color}</div>
                       <div className="flex items-center mt-2">
-                      <input
+                        <input
                           type="number"
                           min={1}
                           value={item.quantity}
                           onChange={(e) =>
                             onQuantityChange(item.productId._id, item.size, item.color, e.target.value)
-                          }                        
+                          }
                           className="w-14 border border-gray-300 rounded-lg text-center px-2 py-1"
                         />
                         <FaPen className="ml-2 text-gray-400" />

@@ -9,6 +9,7 @@ import {
   useGetReviewsByProductQuery,
   useCreateReviewMutation,
 } from "../redux/apis/reviewApi";
+import { toast } from "react-toastify";  // <-- import toast
 
 const StarRating = ({ rating, setRating }) => {
   return (
@@ -43,7 +44,7 @@ const ProductDetail = () => {
 
   // State cho review
   const [reviewText, setReviewText] = useState("");
-const [reviewRating, setReviewRating] = useState(0);
+  const [reviewRating, setReviewRating] = useState(0);
 
   // Lấy reviews của sản phẩm
   const {
@@ -58,9 +59,9 @@ const [reviewRating, setReviewRating] = useState(0);
   const colors = product?.color || [];
 
   const handleAddToCartClick = async () => {
-    if (!selectedSize) return alert("❗ Bạn cần chọn size!");
-    if (!selectedColor) return alert("❗ Bạn cần chọn màu sắc!");
-    if (!product) return alert("❗ Sản phẩm chưa sẵn sàng!");
+    if (!selectedSize) return toast.error("Bạn cần chọn size!");
+    if (!selectedColor) return toast.error("Bạn cần chọn màu sắc!");
+    if (!product) return toast.error("Sản phẩm chưa sẵn sàng!");
 
     try {
       await handleAddToCart(
@@ -74,18 +75,18 @@ const [reviewRating, setReviewRating] = useState(0);
         updateCart,
         user?._id
       );
-      alert("✅ Thêm vào giỏ hàng thành công!");
+      toast.success("Thêm vào giỏ hàng thành công!");
     } catch (err) {
       console.error(err);
-      alert("❌ Lỗi khi thêm vào giỏ hàng.");
+      toast.error("Lỗi khi thêm vào giỏ hàng.");
     }
   };
 
   // Xử lý gửi review
   const handleSubmitReview = async () => {
-    if (!user) return alert("Bạn cần đăng nhập để đánh giá!");
-    if (!product || !product._id) return alert("Sản phẩm chưa được chọn hoặc load chưa xong!");
-    if (!reviewText.trim()) return alert("Vui lòng nhập nội dung đánh giá!");
+    if (!user) return toast.error("Bạn cần đăng nhập để đánh giá!");
+    if (!product || !product._id) return toast.error("Sản phẩm chưa được chọn hoặc load chưa xong!");
+    if (!reviewText.trim()) return toast.error("Vui lòng nhập nội dung đánh giá!");
 
     try {
       await createReview({
@@ -95,11 +96,11 @@ const [reviewRating, setReviewRating] = useState(0);
       }).unwrap();
 
       setReviewText("");
-      setReviewRating(5);
+      setReviewRating(0);
       refetchReviews();
-      alert("Gửi đánh giá thành công!");
+      toast.success("Gửi đánh giá thành công!");
     } catch (err) {
-      alert("Gửi đánh giá thất bại!");
+      toast.error("Gửi đánh giá thất bại!");
     }
   };
 

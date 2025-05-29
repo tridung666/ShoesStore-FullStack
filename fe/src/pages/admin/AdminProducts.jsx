@@ -7,6 +7,7 @@ import {
 } from '../../redux/apis/productApi.jsx';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrashAlt, FaUsers, FaClipboardList } from "react-icons/fa";
+import { toast } from 'react-toastify'; // <-- import toast
 
 const ProductManager = () => {
   const { data: products = [], isLoading, error } = useGetAllProductsQuery();
@@ -44,8 +45,9 @@ const ProductManager = () => {
   const handleDelete = async (id) => {
     try {
       await deleteProduct(id).unwrap();
+      toast.success("Xoá sản phẩm thành công!");
     } catch {
-      alert("Lỗi khi xoá sản phẩm");
+      toast.error("Lỗi khi xoá sản phẩm");
     }
   };
 
@@ -62,13 +64,15 @@ const ProductManager = () => {
     try {
       if (editingId) {
         await updateProduct({ id: editingId, ...payload }).unwrap();
+        toast.success("Cập nhật sản phẩm thành công!");
       } else {
         await createProduct(payload).unwrap();
+        toast.success("Tạo sản phẩm mới thành công!");
       }
       setFormData({ name: '', brand: '', size: '', color: '', price: '', description: '', image: '', stock: '' });
       setEditingId(null);
     } catch {
-      alert("Lỗi khi lưu sản phẩm");
+      toast.error("Lỗi khi lưu sản phẩm");
     }
   };
 
