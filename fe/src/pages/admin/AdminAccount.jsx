@@ -8,6 +8,7 @@ import {
 } from '../../redux/apis/authApi.jsx';
 import PageWrapper from "../../components/PageWrapper.jsx";
 import { FaEdit, FaTrashAlt, FaBoxOpen, FaClipboardList } from "react-icons/fa";
+import { toast } from "react-toastify"; // <-- import toast
 
 const AdminDashboard = () => {
   const [formData, setFormData] = useState({ name: '', username: '', password: '', role: 'user' });
@@ -36,9 +37,9 @@ const AdminDashboard = () => {
   const handleDelete = async (id) => {
     try {
       await deleteUser(id).unwrap();
-      alert("✅ Xoá người dùng thành công!");
+      toast.success("Xoá người dùng thành công!");
     } catch (err) {
-      alert("❌ Xoá thất bại!");
+      toast.error("Xoá thất bại!");
     }
   };
 
@@ -47,15 +48,15 @@ const AdminDashboard = () => {
     try {
       if (editingUserId) {
         await updateUser({ id: editingUserId, ...formData }).unwrap();
-        alert("✅ Cập nhật người dùng thành công!");
+        toast.success("Cập nhật người dùng thành công!");
       } else {
         await createUserByAdmin(formData).unwrap();
-        alert("✅ Tạo người dùng mới thành công!");
+        toast.success("Tạo người dùng mới thành công!");
       }
       setFormData({ name: '', username: '', password: '', role: 'user' });
       setEditingUserId(null);
     } catch (err) {
-      alert("❌ Lưu thất bại! " + (err.data?.message || err.error));
+      toast.error("Lưu thất bại! " + (err.data?.message || err.error));
     }
   };
 

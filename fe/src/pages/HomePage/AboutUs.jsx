@@ -10,10 +10,10 @@ import {
 import { Link } from 'react-router-dom'
 
 const AboutUs = ({
-  bannerImg,          // Ảnh banner hoặc sản phẩm giày
-  logoImg,            // Logo cửa hàng
-  onOrderClick,       // Xử lý khi nhấn nút đặt hàng
-  orderLink = '/Adidas',    // Link mặc định nút đặt hàng
+  bannerImg,
+  logoImg,
+  onOrderClick,
+  orderLink = '/Adidas',
   title = "Về Chúng Tôi",
   subtitle = "Chất lượng và phong cách đỉnh cao cho từng bước chân.",
   companyName = "J97 Store",
@@ -24,115 +24,115 @@ const AboutUs = ({
   chooseUsTitle = "TẠI SAO CHỌN J97 STORE",
   chooseUsSubtitle = "Chúng tôi cam kết mang đến trải nghiệm mua sắm giày hoàn hảo nhất.",
   features = [
-    { icon: <FaShoePrints />, title: "ĐA DẠNG MẪU MÃ", desc: "phù hợp mọi phong cách" },
-    { icon: <FaStar />, title: "CHẤT LƯỢNG CAO", desc: "đảm bảo chính hãng" },
-    { icon: <FaHeadset />, title: "HỖ TRỢ 24/7", desc: "luôn đồng hành cùng bạn" },
-    { icon: <FaGift />, title: "ƯU ĐÃI ĐẶC BIỆT", desc: "cho thành viên thân thiết" },
-    { icon: <FaTruck />, title: "GIAO HÀNG NHANH", desc: "trong vòng 24h" },
-    { icon: <FaChartLine />, title: "CẢI TIẾN LIÊN TỤC", desc: "đáp ứng nhu cầu mới" },
+    { icon: <FaShoePrints />, title: "ĐA DẠNG MẪU MÃ", desc: "Phù hợp mọi phong cách" },
+    { icon: <FaStar />, title: "CHẤT LƯỢNG CAO", desc: "Đảm bảo chính hãng" },
+    { icon: <FaHeadset />, title: "HỖ TRỢ 24/7", desc: "Luôn đồng hành cùng bạn" },
+    { icon: <FaGift />, title: "ƯU ĐÃI ĐẶC BIỆT", desc: "Cho thành viên thân thiết" },
+    { icon: <FaTruck />, title: "GIAO HÀNG NHANH", desc: "Trong vòng 24h" },
+    { icon: <FaChartLine />, title: "CẢI TIẾN LIÊN TỤC", desc: "Đáp ứng nhu cầu mới" },
   ],
 }) => {
   return (
-    <div className="flex flex-col my-8 items-center relative rounded-xl bg-gray-200">
-      {/* Section: Tiêu đề chính */}
-      <section className="w-full text-center bg-primary h-[250px] flex flex-col justify-center items-center space-y-4 text-white">
-        <h1 className="font-bold text-3xl">{title}</h1>
-        <p className="text-lg">{subtitle}</p>
-      </section>
+    <div className="bg-secondary min-h-screen my-4 py-16 px-6 md:px-16">
+      {/* Header */}
+      <header className="text-center mb-16 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-primary mb-2 drop-shadow-md">{title}</h1>
+        <p className="text-lg text-primary/90 font-medium tracking-wide">{subtitle}</p>
+      </header>
 
-      {/* Section: Nội dung chia đôi */}
-      <section className="flex flex-col md:flex-row w-full md:w-4/5 bg-gray-100 relative -mt-16 shadow-lg rounded overflow-hidden">
-        {/* Cột trái: nội dung */}
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="font-semibold font-serif text-2xl mb-3">{companyName}</h2>
-          <hr className="border-primary mb-6 w-1/3 border-2" />
-          <p className="text-gray-800 text-lg">{introText}</p>
-          <p className="mt-6 text-sm text-gray-700">{description1}</p>
-          <h3 className="text-center my-6 font-serif italic text-primary text-xl">{quote}</h3>
-          <p className="text-sm text-gray-700">{description2}</p>
-          <hr className="border-primary my-6 w-1/3 border-2" />
-          <p className="font-semibold font-serif text-primary text-lg">{companyName}</p>
-        </div>
+      {/* Main Content */}
+      <main className="flex flex-col md:flex-row gap-12 max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+        {/* Left Content */}
+        <section className="md:w-1/2 p-10 flex flex-col justify-center space-y-6">
+          <h2 className="text-3xl font-semibold text-primary mb-4">{companyName}</h2>
+          <hr className="w-20 border-primary border-4 rounded-full mb-6" />
+          <p className="text-gray-700 text-lg leading-relaxed">{introText}</p>
+          <p className="text-gray-600">{description1}</p>
+          <blockquote className="italic text-primary text-xl font-serif text-center mt-8 mb-8 border-l-4 border-primary pl-6 shadow-sm">
+            {quote}
+          </blockquote>
+          <p className="text-gray-600">{description2}</p>
+          <hr className="w-20 border-primary border-4 rounded-full mt-10" />
+          <p className="font-bold text-primary text-lg mt-6">{companyName}</p>
+        </section>
 
-        {/* Cột phải: hình ảnh */}
-        <div className="w-full md:w-1/2 h-80 md:h-auto">
+        {/* Right Banner */}
+        <section className="md:w-1/2 relative">
           {bannerImg ? (
             <img
               src={bannerImg}
               alt="Sản phẩm giày"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-full max-h-[480px] rounded-bl-3xl rounded-tr-3xl shadow-lg"
+              loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-600">
+            <div className="flex items-center justify-center w-full h-80 bg-gray-200 rounded-bl-3xl rounded-tr-3xl text-gray-400 font-semibold">
               Ảnh chưa được cung cấp
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* Section: Why Choose Us */}
-      <section className="w-full px-8 py-12 flex flex-col items-center space-y-12 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center w-full">
-          {/* Cột trái: hình ảnh logo */}
-          <div className="relative w-full h-[220px] flex items-center">
-            {/* Khối màu xám bên trái */}
-            <div className="w-[60%] h-full bg-gray-300 rounded-l-lg"></div>
-
-            {/* Logo chồng lên khối xám */}
-            <div className="absolute left-[55%] w-[200px] h-[150px] bg-white shadow-md rounded-lg flex items-center justify-center overflow-hidden">
+      {/* Why Choose Us */}
+      <section className="max-w-6xl mx-auto mt-20 px-4 md:px-0">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-16">
+          {/* Logo */}
+          <div className="relative w-full md:w-1/3 flex justify-center md:justify-start">
+            <div className="w-3/4 h-56 bg-secondary rounded-l-3xl shadow-lg"></div>
+            <div className="absolute left-1/3 w-44 h-44 bg-white rounded-3xl shadow-xl flex items-center justify-center overflow-hidden -translate-x-1/2 -translate-y-1/4">
               {logoImg ? (
                 <img
                   src={logoImg}
                   alt="Logo cửa hàng"
                   className="w-full h-full object-contain"
+                  loading="lazy"
                 />
               ) : (
-                <div className="text-gray-500">Chưa có logo</div>
+                <span className="text-primary font-semibold">Chưa có logo</span>
               )}
             </div>
           </div>
 
-          {/* Cột phải: lý do chọn chúng tôi */}
-          <div>
-            <div className="flex items-center justify-center w-full gap-6 my-6">
-              <div className="w-20 border-t-4 border-primary"></div>
-              <h3 className="text-2xl font-bold text-center whitespace-nowrap text-primary">
-                {chooseUsTitle}
-              </h3>
-              <div className="w-20 border-t-4 border-primary"></div>
+          {/* Content */}
+          <div className="md:w-2/3 space-y-6">
+            <div className="flex items-center justify-center md:justify-start gap-6 mb-6">
+              <div className="w-16 border-t-4 border-primary rounded"></div>
+              <h3 className="text-3xl font-extrabold text-primary">{chooseUsTitle}</h3>
+              <div className="w-16 border-t-4 border-primary rounded"></div>
             </div>
+            <p className="text-primary text-lg mb-8">{chooseUsSubtitle}</p>
 
-            <p className="text-base text-gray-600 mb-8 text-center md:text-left">
-              {chooseUsSubtitle}
-            </p>
-
-            <div className="grid grid-cols-2 gap-x-8 gap-y-6 text-sm text-gray-700">
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-10 text-primary">
               {features.map(({ icon, title, desc }, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <div className="text-primary text-2xl">{icon}</div>
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 bg-secondary rounded-lg shadow hover:shadow-lg transition"
+                >
+                  <div className="text-primary text-3xl">{icon}</div>
                   <div>
-                    <p className="font-bold text-primary">{title}</p>
-                    <p className="text-xs text-gray-500">{desc}</p>
+                    <h4 className="font-bold text-primary">{title}</h4>
+                    <p className="text-sm text-primary/80 mt-1">{desc}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* ORDER NOW button */}
-        <div>
-          <Link
-            to={orderLink}
-            onClick={onOrderClick}
-            className="bg-primary hover:bg-primary-dark text-white px-10 py-4 font-semibold rounded-md transition"
-          >
-            ĐẶT HÀNG NGAY
-          </Link>
+            {/* Order Button */}
+            <div className="mt-10 flex justify-center md:justify-start">
+              <Link
+                to={orderLink}
+                onClick={onOrderClick}
+                className="inline-block bg-primary hover:bg-accent text-white px-12 py-4 rounded-full font-semibold text-lg shadow-lg transition"
+              >
+                ĐẶT HÀNG NGAY
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
   )
 }
 
-export default AboutUs
+export default AboutUs;

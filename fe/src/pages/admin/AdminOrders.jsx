@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import PageWrapper from "../../components/PageWrapper.jsx";
 import { FaUsers, FaBoxOpen, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify"; // <-- import toast
 
 const AllOrders = () => {
   const user = useSelector((state) => state.auth.user);
@@ -21,8 +22,9 @@ const AllOrders = () => {
   const handleChangeStatus = async (orderId, newStatus) => {
     try {
       await updateOrderStatus({ orderId, status: newStatus }).unwrap();
+      toast.success("Cập nhật trạng thái thành công!");
     } catch (err) {
-      alert("Lỗi khi cập nhật trạng thái!");
+      toast.error("Lỗi khi cập nhật trạng thái!");
     }
   };
 
@@ -30,9 +32,9 @@ const AllOrders = () => {
     if (!window.confirm("Bạn có chắc chắn muốn xoá đơn hàng này không?")) return;
     try {
       await deleteOrder(orderId).unwrap();
-      alert("Xoá đơn hàng thành công!");
+      toast.success("Xoá đơn hàng thành công!");
     } catch (err) {
-      alert("Lỗi khi xoá đơn hàng!");
+      toast.error("Lỗi khi xoá đơn hàng!");
     }
   };
 
