@@ -5,12 +5,12 @@ const orderSchema = new mongoose.Schema({
   products: [{
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     size: { type: Number, required: true },
-    color: { type: String, required: true },   // ✅ thêm dòng này
+    color: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
   }],
   totalPrice: { type: Number, required: true },
-  phone: { type: String }, // ✅ thêm dòng này để lưu số điện thoại người nhận
+  phone: { type: String },
   status: { type: String, enum: ['pending', 'shipped', 'delivered', 'canceled'], default: 'pending' },
   orderDate: { type: Date, default: Date.now },
   deliveryAddress: { type: String, required: true },

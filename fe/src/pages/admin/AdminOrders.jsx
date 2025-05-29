@@ -1,17 +1,18 @@
 import { useGetAllOrdersQuery, useUpdateOrderStatusMutation, useDeleteOrderMutation } from "../../redux/apis/orderApi.jsx";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageWrapper from "../../components/PageWrapper.jsx";
 import { FaUsers, FaBoxOpen, FaTrash } from "react-icons/fa";
-import { toast } from "react-toastify"; // <-- import toast
+import { toast } from "react-toastify";
 
 const AllOrders = () => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const { data: orders = [], isLoading, error } = useGetAllOrdersQuery();
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
-  const [deleteOrder] = useDeleteOrderMutation();
+  const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
+  const [deleteOrder, { isLoading: isDeleting }] = useDeleteOrderMutation();
+  const [processingIds, setProcessingIds] = useState(new Set());
 
   useEffect(() => {
     if (user && user.role !== "admin") {
@@ -20,21 +21,39 @@ const AllOrders = () => {
   }, [user, navigate]);
 
   const handleChangeStatus = async (orderId, newStatus) => {
+    if (processingIds.has(orderId)) return; // tránh spam
+    setProcessingIds(prev => new Set(prev).add(orderId));
+
     try {
       await updateOrderStatus({ orderId, status: newStatus }).unwrap();
       toast.success("Cập nhật trạng thái thành công!");
-    } catch (err) {
+    } catch {
       toast.error("Lỗi khi cập nhật trạng thái!");
+    } finally {
+      setProcessingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(orderId);
+        return newSet;
+      });
     }
   };
 
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm("Bạn có chắc chắn muốn xoá đơn hàng này không?")) return;
+    if (processingIds.has(orderId)) return; // tránh spam
+    setProcessingIds(prev => new Set(prev).add(orderId));
+
     try {
       await deleteOrder(orderId).unwrap();
       toast.success("Xoá đơn hàng thành công!");
-    } catch (err) {
+    } catch {
       toast.error("Lỗi khi xoá đơn hàng!");
+    } finally {
+      setProcessingIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(orderId);
+        return newSet;
+      });
     }
   };
 
@@ -81,7 +100,7 @@ const AllOrders = () => {
                       Order ID: <span className="font-mono">{order._id}</span>
                     </div>
                     <div className="text-gray-700">
-                      User: <span className="font-semibold">{order.userId?.name || "N/A"}</span>
+                      Name: <span className="font-semibold">{order.userId?.name || "N/A"}</span>
                     </div>
                     <div className="text-gray-700">
                       Phone: <span className="font-semibold">{order.phone || "N/A"}</span>
@@ -102,6 +121,7 @@ const AllOrders = () => {
                     <div>
                       <span className="font-semibold">Status:</span>
                       <select
+                        disabled={processingIds.has(order._id)}
                         value={order.status}
                         onChange={(e) => handleChangeStatus(order._id, e.target.value)}
                         className="ml-2 border border-green-300 p-1 rounded focus:ring-2 focus:ring-primary"
@@ -113,9 +133,10 @@ const AllOrders = () => {
                       </select>
                     </div>
                     <button
+                      disabled={processingIds.has(order._id)}
                       onClick={() => handleDeleteOrder(order._id)}
                       title="Xóa đơn hàng"
-                      className="text-red-600 hover:text-red-800 transition"
+                      className="text-red-600 hover:text-red-800 transition disabled:opacity-50"
                     >
                       <FaTrash size={20} />
                     </button>

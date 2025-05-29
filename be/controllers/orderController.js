@@ -1,11 +1,18 @@
-const Order = require('../models/Order');
+const User = require('../models/User');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 // ✅ Tạo đơn hàng mới (server tự tính totalPrice)
 exports.createOrder = async (req, res) => {
   try {
     const { products, deliveryAddress, phone } = req.body;
     const userId = req.user.id;
+
+    // Lấy thông tin user để lấy tên
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy user" });
+    }
 
     let totalPrice = 0;
 
@@ -32,11 +39,11 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// ✅ Người dùng xem đơn hàng của chính mình
+// Các hàm khác giữ nguyên không cần thay đổi
 exports.getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user.id })
-      .populate('userId', 'name')
+      .populate('userId', 'name username')
       .populate('products.productId', 'name');
 
     res.status(200).json(orders);
@@ -48,11 +55,11 @@ exports.getMyOrders = async (req, res) => {
   }
 };
 
-// ✅ Admin xem tất cả đơn hàng
+
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate('userId', 'name email')
+      .populate('userId', 'name username') // Lấy tên và username
       .populate('products.productId', 'name')
       .sort({ createdAt: -1 });
 
@@ -62,7 +69,7 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-// ✅ Admin cập nhật trạng thái đơn hàng
+
 exports.updateOrderStatus = async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -81,7 +88,6 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-// ✅ Admin xóa đơn hàng
 exports.deleteOrderById = async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);
