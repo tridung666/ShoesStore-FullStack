@@ -12,7 +12,7 @@ import Cart from './pages/Cart';
 import OrderForm from './pages/OrderForm';
 import MyOrders from './pages/MyOrders';
 
-import AdminDashboard from './pages/admin/AdminAccount';
+import AdminAccounts from './pages/admin/AdminAccount';
 import ProductManager from './pages/admin/AdminProducts';
 import AllOrders from './pages/admin/AdminOrders';
 import ChangePassword from './pages/ChangePassword'; // Import trang mới
@@ -51,10 +51,10 @@ const RouteConfig = () => {
 
       {/* === Admin === */}
       <Route
-        path="/admin/account"
+        path="/admin/accounts"
         element={
           <PrivateRouteRole allowedRoles={['admin']}>
-            <AdminDashboard />
+            <AdminAccounts />
           </PrivateRouteRole>
         }
       />

@@ -1,7 +1,7 @@
 import React from 'react'
 import Banner from '../../assets/images/Banner.png'
-import BestSellers from './BestSellers'
 import PageWrapper from '../../components/PageWrapper';
+import AboutUs from './AboutUs';
 
 const Home = () => {
   // Lấy tên người dùng từ localStorage
@@ -9,7 +9,7 @@ const Home = () => {
 
   return (
     <PageWrapper>
-    <div className='flex flex-col bg-white items-center justify-center min-h-screen'>
+    <div className='flex flex-col bg-white items-center justify-center min-h-0'>
       {/* Hiển thị tên người dùng nếu có */}
       {/* {userName && (
         <div className="text-center mt-8">
@@ -22,7 +22,7 @@ const Home = () => {
         <img 
           src={Banner} 
           alt="Banner" 
-          className="w-full pt-[100px] transition-all duration-300 group-hover:brightness-50"
+          className="w-full transition-all duration-300 group-hover:brightness-50"
         />
 
         <h1 
@@ -32,9 +32,9 @@ const Home = () => {
           Step Up Your Style with Our <br /> Sneakers
         </h1>
       </div>
-
-      {/* Hiển thị Best Sellers */}
-      <BestSellers />
+          {/*Another Banner */}
+          <AboutUs />
+      
     </div>
     </PageWrapper>
   )
