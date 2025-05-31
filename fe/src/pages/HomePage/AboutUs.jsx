@@ -7,11 +7,12 @@ import {
   FaTruck,
   FaChartLine,
 } from 'react-icons/fa'
+import logo from '../../assets/J97.png'
 import { Link } from 'react-router-dom'
 
 const AboutUs = ({
-  bannerImg,
-  logoImg,
+  bannerImg = 'https://graphicsfamily.com/wp-content/uploads/edd/2021/07/Free-Sports-Running-Shoes-Banner-Design-2048x1152.jpg',
+  logoImg = logo,
   onOrderClick,
   orderLink = '/Adidas',
   title = "Về Chúng Tôi",
