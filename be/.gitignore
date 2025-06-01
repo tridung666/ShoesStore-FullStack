@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# dotenv environment variables
+.env
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# IDE/editor config
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Others
+coverage/
+*.tgz
+*.swp
