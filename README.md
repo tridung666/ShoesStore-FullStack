@@ -1,17 +1,23 @@
-## Full Usage Guide
+# 🎉 **J97 Store - Shoe E-commerce Web App** 👟
 
-### 1. Clone the Repository
+---
+
+## 🛠️ **Full Usage Guide**
+
+### 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/your-username/j97-store.git
 cd j97-store
 ```
 
-### 2. Environment Setup
+---
+
+### 2️⃣ Environment Setup
 
 Before running the project, you need to configure environment variables for both backend and frontend.
 
-#### Backend (`be/.env`)
+#### 🗄️ **Backend (`be/.env`)**
 
 Create a `.env` file in the `be` folder (you can copy from `.env.example` if available) and fill in the following variables:
 
@@ -26,32 +32,31 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
-> **Note:** Replace the example values with your actual credentials.
+> ⚠️ **Note:** Replace the example values with your actual credentials.
 
-#### Frontend (`fe/.env`)
+#### 💻 **Frontend (`fe/.env`)**
 
 Create a `.env` file in the `fe` folder and set the backend API endpoint:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
 ```
-> **Note:** Make sure this URL matches your backend server address.
+> ⚠️ **Note:** Make sure this URL matches your backend server address.
 
 ---
 
-### 3. Install Dependencies & Run
+### 3️⃣ Install Dependencies & Run
 
-#### Backend
+#### 🗄️ Backend
 
 ```bash
 cd be
 npm install
 npm start
 ```
+> The backend server will run on `http://localhost:5000` by default.
 
-The backend server will run on `http://localhost:5000` by default.
-
-#### Frontend
+#### 💻 Frontend
 
 Open a new terminal window/tab:
 
@@ -60,44 +65,47 @@ cd fe
 npm install
 npm run dev
 ```
-
-The frontend will run on `http://localhost:5173` by default.
-
----
-
-### 4. Access the Application
-
-- **Frontend:** Open [http://localhost:5173](http://localhost:5173) in your browser.
-- **Backend API:** Accessible at [http://localhost:5000](http://localhost:5000).
+> The frontend will run on `http://localhost:5173` by default.
 
 ---
 
-### 5. Default Accounts
+### 4️⃣ Access the Application
+
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend API:** [http://localhost:5000](http://localhost:5000)
+
+---
+
+### 5️⃣ Default Accounts
 
 - **Admin/User accounts:** You may need to register a new account or seed the database depending on your backend implementation.
 
 ---
 
-### 6. Additional Notes
+### 6️⃣ Additional Notes
 
-- Make sure MongoDB is running and accessible from your backend.
-- For image upload and chatbot features, ensure your Cloudinary and Gemini API credentials are valid.
-- If deploying, update environment variables accordingly.
+- ✅ Make sure **MongoDB** is running and accessible from your backend.
+- ✅ For image upload and chatbot features, ensure your **Cloudinary** and **Gemini API** credentials are valid.
+- ✅ If deploying, update environment variables accordingly.
 
 ---
 
-## Technologies Used
+## 🚀 **Technologies Used**
 
 - **Frontend:** React, Vite, Redux Toolkit, TailwindCSS, React Router, React Toastify
 - **Backend:** Node.js, Express, MongoDB (Mongoose), JWT, Multer, Cloudinary, Google Gemini API (chatbot)
 - **Others:** Cloudinary (image upload), dotenv, morgan, cors
 
-## Environment & Configuration
+---
+
+## ⚙️ **Environment & Configuration**
 
 - `be/.env`: MongoDB URI, JWT secret, Cloudinary, Gemini API key, FRONTEND_BASE_URL
 - `fe/.env`: VITE_API_BASE_URL (backend address)
 
-## Contribution
+---
+
+## 🤝 **Contribution**
 
 Pull requests and issues are always welcome!
 
